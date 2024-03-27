@@ -1,3 +1,3 @@
-public class Unit {
+abstract class Unit {
 
 }
