@@ -11,7 +11,7 @@ public class SQLManager {
     public SQLManager(){
 
         /*
-        variable local to Connor's machine, might want to look into
+        variables below local to Connor's machine, might want to look into
         making this universal or easliy swithchable
         */
 
@@ -47,6 +47,56 @@ public class SQLManager {
             return null;
         }
     }
+
+
+
+    /*
+        Connor
+        using a string username, creates and returns a member, (without stats being initialized)
+        returns a member
+     */
+    public Member getMember(String username){
+        try{
+            String f = String.format("SELECT * FROM member WHERE '%s' = user_name",username);
+            Statement s = con.createStatement();
+            s.executeQuery(f);
+            ResultSet r = s.getResultSet();
+
+            r.next();
+
+            Member m = new Member(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getString(5),r.getInt(6));
+            return m;
+        }
+        catch (Exception e){
+            System.out.println("Problem in getMember : "+e);
+            return null;
+        }
+    }
+
+
+    /*
+        Connor
+        Pull a stat based on the id of a member, supply function with valid a member
+        returns a bool depending on if it worked
+     */
+    public boolean getStats(Member m){
+        try{
+            int id = m.getId();
+            String f = String.format("SELECT * FROM stats WHERE '%d' = member_id",id);
+            Statement s = con.createStatement();
+            s.executeQuery(f);
+            ResultSet r = s.getResultSet();
+            r.next();
+
+            m.setStats(r.getInt(2),r.getInt(5),r.getInt(4),r.getInt(7),r.getInt(3),r.getInt(6));
+            return true;
+        }
+        catch(Exception e){
+            System.out.println("Error in getStats function: " + e);
+            return false;
+        }
+    }
+
 
 
 
