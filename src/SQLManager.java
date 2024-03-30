@@ -98,7 +98,40 @@ public class SQLManager {
     }
 
 
-
+    /*
+        Connor
+        Using a member variable, takes and updates the stats database to reflect changes in goals
+        returns a boolean to determine if successful
+     */
+    public boolean setGoalStats(Member m){
+        try{
+            String f = String.format("UPDATE stats SET goal_bench_press = '%d', goal_deadlift = '%d', goal_squat = '%d' WHERE '%d' = member_id",m.getGoalBench(), m.getGoalDeadlift(),m.getGoalSquat(),m.getId());
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("Problem in set Stats : " + e);
+            return false;
+        }
+    }
+    /*
+        Connor
+        Using a member variable, takes and updates the stats database to reflect changes in goals
+        returns a boolean to determine if successful
+     */
+    public boolean setStats(Member m){
+        try{
+            String f = String.format("UPDATE stats SET cur_bench_press = '%d', cur_deadlift = '%d', cur_squat = '%d' WHERE '%d' = member_id",m.getBench(), m.getDeadlift(),m.getSquat(),m.getId());
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("Problem in set Stats : " + e);
+            return false;
+        }
+    }
 
     /*
         Connor
