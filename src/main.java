@@ -8,6 +8,7 @@ public class main {
 
         SQLManager sql = new SQLManager();
         TestCases t = new TestCases();
+        //t.TestCase(sql);
 
 
 

@@ -2,8 +2,6 @@ package src;
 
 public abstract class User {
 
-<<<<<<< HEAD
-=======
     int id;
     String firstName,lastName;
     String userName,password;
@@ -17,5 +15,8 @@ public abstract class User {
 
     }
 
->>>>>>> b1c6038a816d6f716bdfcbb8ddadaf1ae572e1b5
+    public int getId(){
+        return id;
+    }
+
 }
