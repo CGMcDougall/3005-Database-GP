@@ -1,5 +1,7 @@
 package src;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SQLManager {
@@ -14,10 +16,14 @@ public class SQLManager {
         variables below local to Connor's machine, might want to look into
         making this universal or easliy swithchable
         */
-
+/*
         String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
         String pass = "admin";
+ */
+        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String user = "postgres";
+        String pass = "8439";
 
         try{
             Class.forName("org.postgresql.Driver");
@@ -159,6 +165,40 @@ public class SQLManager {
 
     //name, purpose, return:
     //function exe::: ->return
+
+    /*
+    Oliver
+    Get the equipment type, id and maintenance status
+    for gym equipment
+    Returns: list of strings with information on all equipment
+     */
+    public List<String> getMaintenanceStatus()
+    {
+        List<String> equipmentData = new ArrayList<>();
+        try
+        {
+            String query = "SELECT * FROM equipment";
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            int numColumns = rs.getMetaData().getColumnCount();
+            while (rs.next())
+            {
+                StringBuilder row = new StringBuilder();
+                for (int  i = 1; i <= numColumns; ++i)
+                {
+                    String col = rs.getString(i);
+                    row.append(col).append(", ");
+                }
+                row.setLength(row.length() - 2);
+                equipmentData.add(row.toString());
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error getting maintenance status: " + e);
+        }
+        return equipmentData;
+    }
 
 
 }
