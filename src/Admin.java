@@ -15,4 +15,6 @@ public class Admin extends User {
         for (String s : maintenanceStatus) {System.out.println(s);}
 
     }
+
+//    private boolean hasConflict()
 }
