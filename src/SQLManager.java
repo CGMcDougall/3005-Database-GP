@@ -207,6 +207,48 @@ public class SQLManager {
         return false;
     }
 
+    public Session getSession(int sessionId)
+    {
+        String query = "SELECT * FROM Schedule WHERE session_id = ?";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            pstatement.setInt(1, sessionId);
+            ResultSet rs = pstatement.executeQuery();
+            rs.next();
+            //TODO: next few lines could probably go into generateSessionObject
+            Session s = generateSessionObject(rs);
+            if (s == null) return null;
+            while(rs.next())
+            {
+                s.addMember(rs.getInt("member_id"));
+            }
+            return s;
+        } catch (Exception e)
+        {
+            System.out.println("Error getting session from db: " + e);
+        }
+        return null;
+    }
+
+    public Session generateSessionObject(ResultSet rs)
+    {
+        try {
+            int sid = rs.getInt("session_id");
+            int mid = rs.getInt("member_id");
+            int tid = rs.getInt("trainer_id");
+            int rn = rs.getInt("room_number");
+            LocalDate d = rs.getDate("session_date").toLocalDate();
+            LocalTime st = rs.getTime("start_time").toLocalTime();
+            LocalTime et = rs.getTime("end_time").toLocalTime();
+            return new Session(sid, tid, rn, mid, d, st, et);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error generating session object: " + e);
+        }
+        return null;
+    }
+
     /*
     returns any table in the database as a list of strings, with
     each String representing a row in the table
