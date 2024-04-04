@@ -3,8 +3,8 @@ package src;
 public abstract class User {
 
     int id;
-    String firstName,lastName;
-    String userName,password;
+    protected String firstName,lastName;
+    protected String userName,password;
 
     public User(int id, String fn, String ln, String un, String pass){
         this.id = id;
@@ -18,5 +18,16 @@ public abstract class User {
     public int getId(){
         return id;
     }
+    public String getFirstName(){ return firstName; }
 
+    public String getLastName() {
+        return lastName;
+    }
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

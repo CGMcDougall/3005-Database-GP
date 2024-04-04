@@ -30,6 +30,73 @@ public class Member extends User {
 
 
 
+    public void scheduleManagment(){
+        Scanner in = new Scanner(System.in);
+
+        while(true){
+            try{
+
+                System.out.println("Does nothing rn");
+
+                return;
+            }
+            catch (Exception e){
+                System.out.println("In scheduleManagment : " +e);
+            }
+        }
+    }
+
+    public void updatePersonalInfo(){
+
+        Scanner in = new Scanner(System.in);
+
+
+        while (true){
+            try{
+                System.out.println("What would you like to change?");
+                System.out.println("1: First Name, 2: Last Name, 3: Username, 4: Password, (Any other # to cancel)");
+                switch (in.nextInt()){
+                    case 1:
+                        System.out.print("Enter new First Name: ");
+                        firstName = in.next();
+                        break;
+                    case 2:
+                        System.out.print("Enter new Last Name: ");
+                        lastName = in.next();
+                        break;
+                    case 3:
+                        System.out.print("Enter new Username: ");
+                        userName = in.next();
+                        break;
+                    case 4:
+                        System.out.print("Enter new password: ");
+                        String temp = in.next();
+                        System.out.print("\nRe-enter password to confirm : ");
+                        if (temp.equals(in.next()))password = temp;
+                        else System.out.println("password match failed");
+                        break;
+                    default:
+                        System.out.println("Finsihed");
+                        return;
+                }
+
+
+
+
+
+            }
+            catch (Exception e){
+                System.out.println("in updatePersonalInfo : "+e);
+            }
+        }
+
+
+    }
+
+
+
+
+
     //update the goal stat variables
     public void updateGoalStats(){
 
@@ -57,7 +124,7 @@ public class Member extends User {
                         this.goalSquat = in.nextInt();
                         break;
                     default:
-                        System.out.println("Canceled.");
+                        System.out.println("Finished.");
 
                         return;
                 }

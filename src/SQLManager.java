@@ -20,14 +20,14 @@ public class SQLManager {
         variables below local to Connor's machine, might want to look into
         making this universal or easliy swithchable
         */
-/*
+
         String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
         String pass = "admin";
- */
-        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
-        String user = "postgres";
-        String pass = "8439";
+
+//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String user = "postgres";
+//        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -116,6 +116,20 @@ public class SQLManager {
             return true;
         } catch (Exception e) {
             System.out.println("Problem in set Stats : " + e);
+            return false;
+        }
+    }
+
+
+    public boolean setInfo(User m, String table){
+        try{
+            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', user_name = '%s', password = '%s' WHERE '%d' = member_id",table,m.getFirstName(),m.getLastName(),m.getUserName(),m.getPassword(),m.getId());
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("Error in setInfo : "+e);
             return false;
         }
     }
