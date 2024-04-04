@@ -31,10 +31,13 @@ public class Admin extends User {
     private void addClass(String trainerUsername, List<String> memberUserNames, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
 
+
     }
-    private boolean hasConflict()
+    private boolean hasConflict(Session s)
     {
+        List<Session> existingSessions = null;
         return true;
+
 
     }
 }

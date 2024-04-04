@@ -182,56 +182,63 @@ public class SQLManager {
         return equipmentData;
     }
 
-    /* !!!UNTESTED!!!
-    adds a session to the schedule table
-    params hold values for each attribute in the session
+
+    /* should work
+    saves session object to the database. Works for both group
+    and individual sessions
+    @param s Session object to save
     returns true if successful, false if unsuccessful
      */
-    public boolean addClassToSchedule(int sessionId, int memberId, int roomNumber, int trainerId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        String query = "INSERT INTO Schedule (session_id, member_id, room_number, trainer_id, session_date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public boolean saveFullSession(Session s) //saves full session object
+    {
+        for (int i = 0; i < s.getMemberIds().size(); ++i) {
+            if (!saveSession(s, s.getMemberIds().get(i))) return false;
+        }
+        return true;
+    }
+
+    /* should work
+        adds a session row to the schedule table. If it is a group session,
+        this function has to be called for every member in the group
+        @param s session object to save
+        @param memberIndex member id to add to schedule
+        returns true if successful, false if unsuccessful
+         */
+    private boolean saveSession(Session s, int memberId) { //saves one session row (need the 2 funcs cause of group sessions)
+        String query = "INSERT INTO Schedule (session_id, member_id, room_number, trainer_id, session_date, start_time, " +
+                "end_time) VALUES (?, ?, ?, ?, ?, ?, ?) on conflict(session_id, member_id) do nothing";
 
         try (PreparedStatement pstatement = con.prepareStatement(query)) {
-            pstatement.setInt(1, sessionId);
+            pstatement.setInt(1, s.getSessionId());
             pstatement.setInt(2, memberId);
-            pstatement.setInt(3, roomNumber);
-            pstatement.setInt(4, trainerId);
-            pstatement.setDate(5, java.sql.Date.valueOf(date));
-            pstatement.setTime(6, java.sql.Time.valueOf(startTime));
-            pstatement.setTime(7, java.sql.Time.valueOf(endTime));
+            pstatement.setInt(3, s.getRoomNumber());
+            pstatement.setInt(4, s.getTrainerId());
+            pstatement.setDate(5, java.sql.Date.valueOf(s.getDate()));
+            pstatement.setTime(6, java.sql.Time.valueOf(s.getStartTime()));
+            pstatement.setTime(7, java.sql.Time.valueOf(s.getEndTime()));
             pstatement.executeUpdate();
             System.out.println("Class saved to schedule");
             return true;
         } catch (Exception e) {
-            System.out.println("Error saving class to schedule");
+            System.out.println("Error saving class to schedule: " + e);
         }
         return false;
     }
 
-    public Session getSession(int sessionId)
-    {
+    public Session getSession(int sessionId) {
         String query = "SELECT * FROM Schedule WHERE session_id = ?";
-        try (PreparedStatement pstatement = con.prepareStatement(query))
-        {
+        try (PreparedStatement pstatement = con.prepareStatement(query)) {
             pstatement.setInt(1, sessionId);
             ResultSet rs = pstatement.executeQuery();
             rs.next();
-            //TODO: next few lines could probably go into generateSessionObject
-            Session s = generateSessionObject(rs);
-            if (s == null) return null;
-            while(rs.next())
-            {
-                s.addMember(rs.getInt("member_id"));
-            }
-            return s;
-        } catch (Exception e)
-        {
+            return generateSessionObject(rs);
+        } catch (Exception e) {
             System.out.println("Error getting session from db: " + e);
         }
         return null;
     }
 
-    public Session generateSessionObject(ResultSet rs)
-    {
+    public Session generateSessionObject(ResultSet rs) {
         try {
             int sid = rs.getInt("session_id");
             int mid = rs.getInt("member_id");
@@ -240,10 +247,12 @@ public class SQLManager {
             LocalDate d = rs.getDate("session_date").toLocalDate();
             LocalTime st = rs.getTime("start_time").toLocalTime();
             LocalTime et = rs.getTime("end_time").toLocalTime();
-            return new Session(sid, tid, rn, mid, d, st, et);
-        }
-        catch (Exception e)
-        {
+            Session s = new Session(sid, tid, rn, mid, d, st, et);
+            while (rs.next()) {
+                s.addMember(rs.getInt("member_id"));
+            }
+            return s;
+        } catch (Exception e) {
             System.out.println("Error generating session object: " + e);
         }
         return null;
@@ -254,17 +263,13 @@ public class SQLManager {
     each String representing a row in the table
     param is the name of the table in the db to return
      */
-    public List<String> getTable(String tableName)
-    {
+    public List<String> getTable(String tableName) {
         List<String> schedule = new ArrayList<>();
         String query = String.format("SELECT * FROM %s", tableName);
-        try (PreparedStatement pstatement = con.prepareStatement(query))
-        {
+        try (PreparedStatement pstatement = con.prepareStatement(query)) {
             ResultSet rs = pstatement.executeQuery();
             schedule = getTableAsList(rs);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("Error getting schedule: " + e);
         }
         return schedule;

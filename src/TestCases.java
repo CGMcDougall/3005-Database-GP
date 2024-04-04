@@ -10,7 +10,9 @@ public class TestCases {
 //        Admin a = new Admin(2, "ivana", "humpalot", "ih", "loll");
 //        a.viewEquipmentStatus();
         SQLManager sql = new SQLManager();
-        System.out.println(sql.getSession(2));
+        Session s = sql.getSession(2);
+//        s.addMember(1);
+//        sql.saveFullSession(s);
 //        List<String> admins = sql.getTable("schedule");
 //        for (String  s: admins) System.out.println(s);
     }
