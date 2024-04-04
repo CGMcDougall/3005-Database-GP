@@ -2,6 +2,7 @@ package src;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Admin extends User {
@@ -28,16 +29,46 @@ public class Admin extends User {
            make function to check if a room is available at a certain time, if not available return type of event
            figure out how to add an event that's not a class
      */
-    private void addClass(String trainerUsername, List<String> memberUserNames, LocalDate date, LocalTime startTime, LocalTime endTime)
+
+    /*
+    #TODO: addClass may or may not work, test test test
+     */
+    public void addClass(int trainerId, int memberId, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
-
-
+        List<Integer> id = new ArrayList<>();
+        id.add(memberId);
+        addClass(trainerId, id, roomNum, date, startTime, endTime);
     }
-    private boolean hasConflict(Session s)
+    public void addClass(int trainerId, List<Integer> memberIds, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
-        List<Session> existingSessions = null;
-        return true;
+        int sid = sql.getMaxSessionId() + 1;
 
+        Session s = new Session(sid, trainerId, roomNum, memberIds.get(0), date, startTime, endTime);
+        for (int i = 1; i < memberIds.size(); ++i) s.addMember(memberIds.get(i));
 
+        System.out.println("AAAAAAHHHH");
+        if (!hasConflict(s)) {
+            sql.saveFullSession(s);
+        }
+    }
+    private boolean hasConflict(Session session)
+    {
+        List<Session> existingSessions = sql.getAllSessions();
+
+        for (Session existingSession: existingSessions)
+        {
+            System.out.println("OOOOHHHHHHHHHH");
+
+            if (session.sameRoom(existingSession)/* && session.sameDay(existingSession)*/)
+            {
+                System.out.println("UUUUUHHHHHHHHHHHHHHHH");
+                if (session.sameDay(existingSession))
+                {
+                    System.out.printf("Error, %s\noverlaps with\n%s\n", session.toString(), existingSession.toString());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

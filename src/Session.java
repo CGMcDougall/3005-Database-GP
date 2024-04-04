@@ -37,6 +37,25 @@ public class Session {
                 sessionId, trainerId, roomNumber, memberIds.toString(), date.toString(), startTime.toString(), endTime.toString());
     }
 
+    public boolean sameDay(Session s)
+    {
+        System.out.println(this.date + " | " + s.getDate());
+        System.out.println(this.date == s.getDate());
+        return (this.date == s.getDate());
+    }
+
+    public boolean sameRoom(Session s)
+    {
+        return this.roomNumber == s.getRoomNumber();
+    }
+
+    public boolean overlaps(Session s)
+    {
+        boolean thisOverlapsS = (startTime.isBefore(s.getEndTime()) && !startTime.isBefore(s.getStartTime()));
+        boolean sOverlapsThis = (s.getStartTime().isBefore(this.endTime) && !s.getStartTime().isBefore(this.startTime));
+        return thisOverlapsS || sOverlapsThis;
+    }
+
     public void addMember(int memberId)
     {
         memberIds.add(memberId);

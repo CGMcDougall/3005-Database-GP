@@ -21,13 +21,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-        String user = "postgres";
-        String pass = "admin";
-
-//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
 //        String user = "postgres";
-//        String pass = "8439";
+//        String pass = "admin";
+
+        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String user = "postgres";
+        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -231,7 +231,6 @@ public class SQLManager {
             pstatement.setTime(6, java.sql.Time.valueOf(s.getStartTime()));
             pstatement.setTime(7, java.sql.Time.valueOf(s.getEndTime()));
             pstatement.executeUpdate();
-            System.out.println("Class saved to schedule");
             return true;
         } catch (Exception e) {
             System.out.println("Error saving class to schedule: " + e);
@@ -239,6 +238,56 @@ public class SQLManager {
         return false;
     }
 
+    public List<Session> getAllSessions()
+    {
+        List<Integer> ids = getSessionIds();
+        if (ids == null) return null;
+        List<Session> sessions = new ArrayList<>();
+        System.out.println(ids);
+        for (int id : ids)
+        {
+            Session s = getSession(id);
+            if (s == null) return null;
+            sessions.add(s);
+        }
+        return sessions;
+    }
+
+    private List<Integer> getSessionIds()
+    {
+        List<Integer> ids = new ArrayList<>();
+        String query = "SELECT DISTINCT session_id from Schedule";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            ResultSet rs = pstatement.executeQuery();
+            while (rs.next())
+            {
+                ids.add(rs.getInt(1));
+            }
+        } catch (Exception e)
+        {
+            System.out.println("Error getting session ids: " + e);
+        }
+        if (ids.isEmpty()) return null;
+        return ids;
+    }
+
+    /*
+    returns the current highest session_id in the Schedule table
+     */
+    public int getMaxSessionId()
+    {
+        String query = "SELECT MAX(session_id) FROM Schedule";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            ResultSet rs = pstatement.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e)
+        {
+            System.out.println("Error finding max session id: " + e);
+        }
+        return -1;
+    }
     public Session getSession(int sessionId) {
         String query = "SELECT * FROM Schedule WHERE session_id = ?";
         try (PreparedStatement pstatement = con.prepareStatement(query)) {
@@ -326,6 +375,4 @@ public class SQLManager {
         if (table.isEmpty()) return null;
         return table;
     }
-
-
 }
