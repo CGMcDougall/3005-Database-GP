@@ -72,6 +72,7 @@ public class SQLManager {
             r.next();
 
             Member m = new Member(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5), r.getInt(6));
+            getStats(m);
             return m;
         } catch (Exception e) {
             System.out.println("Problem in getMember : " + e);
@@ -163,6 +164,34 @@ public class SQLManager {
         }
     }
 
+    /*
+        Connor
+     */
+    public boolean newMember(String un, String pass){
+        try{
+            String f = String.format("INSERT INTO usertable VALUES ('%s','%s',1); INSERT INTO member (first_name,last_name,user_name,password,balance) VALUES ('none','none','%s','%s',0)",un,pass,un,pass);
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return newStat(getMember(un));
+        }
+        catch (Exception e){
+            System.out.println("Error in newMemeber : " + e);
+            return false;
+        }
+    }
+
+    public boolean newStat(Member m){
+        try{
+            String f = String.format("INSERT INTO stats VALUES ('%d','0','0','0','0','0','0')",m.getId());
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
 
     /*
         Connor

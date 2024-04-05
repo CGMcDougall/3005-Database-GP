@@ -128,7 +128,7 @@ public class Member extends User {
                         this.goalSquat = in.nextInt();
                         break;
                     default:
-                        System.out.println("Finished.");
+                        System.out.println("Back.");
 
                         return;
                 }
@@ -159,15 +159,15 @@ public class Member extends User {
                         this.bench = in.nextInt();
                         break;
                     case 2:
-                        System.out.print("Set new squat : ");
+                        System.out.print("Set new deadlift : ");
                         this.deadlift = in.nextInt();
                         break;
                     case 3:
-                        System.out.print("Set new deadlift : ");
+                        System.out.print("Set new squat : ");
                         this.squat = in.nextInt();
                         break;
                     default:
-                        System.out.println("Canceled.");
+                        System.out.println("Back.");
 
                         return;
                 }

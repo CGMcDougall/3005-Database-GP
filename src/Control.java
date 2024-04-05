@@ -18,10 +18,65 @@ public class Control {
         v = new View();
     }
 
+    public void init(){
+        v.banner();
+        Boolean cont = true;
+        while (cont) {
+            try {
+                switch (v.login()) {
+                    case 1:
+                        login();
+                        cont = false;
+                        break;
+                    case 2:
+                        register();
+                        cont = false;
+                        break;
+                    default:
+                        System.out.println("Invalid input");
+                        break;
+                }
+            }
+            catch (Exception e) {
+                break;
+            }
+        }
+
+    }
+
+    public void register(){
+        try{
+            System.out.println("Please create a username");
+            String un = in.next();
+            System.out.println("Please create a password");
+            String p1 = in.next();
+            System.out.println("Please confirm password");
+            String p2 = in.next();
+            if(!p1.equals(p2)){
+                System.out.println("Passwords dont match");
+            }
+            else{
+                if(sql.newMember(un,p1)) {
+                    username = un;
+                    memberControl();
+                }
+                else {
+                    System.out.println("Something went wrong");
+                    return;
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Something went wrong in register : "+e);
+
+        }
+    }
+
+
 
     public void login(){
         while (true) {
-            try {
+            try{
                 System.out.print("Input username : ");
                 String usr = in.next();
                 System.out.print("Input password : ");
@@ -95,12 +150,12 @@ public class Control {
                     sql.updateUserName(m,s);
                     break;
                 case 3:
-                    m.updateGoalStats();
-                    sql.setGoalStats(m);
-                    break;
-                case 4:
                     m.updateStats();
                     sql.setStats(m);
+                    break;
+                case 4:
+                    m.updateGoalStats();
+                    sql.setGoalStats(m);
                     break;
                 case 5:
                     return;

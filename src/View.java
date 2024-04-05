@@ -11,18 +11,44 @@ public class View {
 
     }
 
-//    public void login() {
-//        System.out.println("\n" +
-//                "   _____ _       _       _______              _                        \n" +
-//                "  / ____| |     | |     |__   __|            (_)                       \n" +
-//                " | |    | |_   _| |__      | |_ __ ___  _ __  _  ___ __ _ _ __   __ _  \n" +
-//                " | |    | | | | | '_ \\     | | '__/ _ \\| '_ \\| |/ __/ _` | '_ \\ / _` | \n" +
-//                " | |____| | |_| | |_) |    | | | | (_) | |_) | | (_| (_| | | | | (_| | \n" +
-//                "  \\_____|_|\\__,_|_.__/     |_|_|  \\___/| .__/|_|\\___\\__,_|_| |_|\\__,_| \n" +
-//                "                                       | |                             \n" +
-//                "                                       |_|                             \n");                                                                                                                                                                           \
-//
-//    }
+    public void banner(){
+        System.out.println("\n" +
+                "                                                                                                                                                    \n" +
+                "                                                                                                                                                    \n" +
+                "   SSSSSSSSSSSSSSS                                                                        GGGGGGGGGGGGG                                             \n" +
+                " SS:::::::::::::::S                                                                    GGG::::::::::::G                                             \n" +
+                "S:::::SSSSSS::::::S                                                                  GG:::::::::::::::G                                             \n" +
+                "S:::::S     SSSSSSS                                                                 G:::::GGGGGGGG::::G                                             \n" +
+                "S:::::S              ooooooooooo     mmmmmmm    mmmmmmm      eeeeeeeeeeee          G:::::G       GGGGGyyyyyyy           yyyyyyymmmmmmm    mmmmmmm   \n" +
+                "S:::::S            oo:::::::::::oo mm:::::::m  m:::::::mm  ee::::::::::::ee       G:::::G              y:::::y         y:::::mm:::::::m  m:::::::mm \n" +
+                " S::::SSSS        o:::::::::::::::m::::::::::mm::::::::::me::::::eeeee:::::ee     G:::::G               y:::::y       y:::::m::::::::::mm::::::::::m\n" +
+                "  SS::::::SSSSS   o:::::ooooo:::::m::::::::::::::::::::::e::::::e     e:::::e     G:::::G    GGGGGGGGGG  y:::::y     y:::::ym::::::::::::::::::::::m\n" +
+                "    SSS::::::::SS o::::o     o::::m:::::mmm::::::mmm:::::e:::::::eeeee::::::e     G:::::G    G::::::::G   y:::::y   y:::::y m:::::mmm::::::mmm:::::m\n" +
+                "       SSSSSS::::So::::o     o::::m::::m   m::::m   m::::e:::::::::::::::::e      G:::::G    GGGGG::::G    y:::::y y:::::y  m::::m   m::::m   m::::m\n" +
+                "            S:::::o::::o     o::::m::::m   m::::m   m::::e::::::eeeeeeeeeee       G:::::G        G::::G     y:::::y:::::y   m::::m   m::::m   m::::m\n" +
+                "            S:::::o::::o     o::::m::::m   m::::m   m::::e:::::::e                 G:::::G       G::::G      y:::::::::y    m::::m   m::::m   m::::m\n" +
+                "SSSSSSS     S:::::o:::::ooooo:::::m::::m   m::::m   m::::e::::::::e                 G:::::GGGGGGGG::::G       y:::::::y     m::::m   m::::m   m::::m\n" +
+                "S::::::SSSSSS:::::o:::::::::::::::m::::m   m::::m   m::::me::::::::eeeeeeee          GG:::::::::::::::G        y:::::y      m::::m   m::::m   m::::m\n" +
+                "S:::::::::::::::SS oo:::::::::::oom::::m   m::::m   m::::m ee:::::::::::::e            GGG::::::GGG:::G       y:::::y       m::::m   m::::m   m::::m\n" +
+                " SSSSSSSSSSSSSSS     ooooooooooo  mmmmmm   mmmmmm   mmmmmm   eeeeeeeeeeeeee               GGGGGG   GGGG      y:::::y        mmmmmm   mmmmmm   mmmmmm\n" +
+                "                                                                                                            y:::::y                                 \n" +
+                "                                                                                                           y:::::y                                  \n" +
+                "                                                                                                          y:::::y                                   \n" +
+                "                                                                                                         y:::::y                                    \n" +
+                "                                                                                                        yyyyyyy                                     \n" +
+                "                                                                                                                                                    \n" +
+                "                                                                                                                                                    \n");
+    }
+
+
+    public int login() {
+
+        System.out.println("Login (1) or make an account (2)");
+        return in.nextInt();
+
+    }
+
+
 
 
     public int memberView(){
