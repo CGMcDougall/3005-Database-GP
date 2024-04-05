@@ -78,6 +78,47 @@ public class SQLManager {
             return null;
         }
     }
+    /*
+     Connor
+     using a string username, creates and returns a Trainer, (without stats being initialized)
+     returns an trainer
+  */
+    public Trainer getTrainer(String username){
+        try{
+            String f = String.format("SELECT * FROM trainer WHERE '%s' = user_name",username);
+            Statement s = con.createStatement();
+            s.execute(f);
+            ResultSet r = s.getResultSet();
+            r.next();
+            Trainer t = new Trainer(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5));
+            return t;
+        }
+        catch (Exception e){
+            System.out.println("Error in getTrainer: " + e);
+            return null;
+        }
+    }
+
+    /*
+      Connor
+      using a string username, creates and returns an Admin, (without stats being initialized)
+      returns an admin
+   */
+    public Admin getAdmin(String username){
+        try{
+            String f = String.format("SELECT * FROM admin WHERE '%s' = user_name",username);
+            Statement s = con.createStatement();
+            s.execute(f);
+            ResultSet r = s.getResultSet();
+            r.next();
+            Admin a = new Admin(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5));
+            return a;
+        }
+        catch (Exception e){
+            System.out.println("Error in getAdmin: " + e);
+            return null;
+        }
+    }
 
 
     /*
@@ -171,6 +212,43 @@ public class SQLManager {
         }
 
 
+    }
+/*
+    TODO: MAKE THIS FUNCTION ALSO UPDATE THE MEMBER TABLE
+ */
+
+    public boolean updateUserName(User u, String n){
+        try{
+            String f = String.format("UPDATE usertable SET user_name = '%s' WHERE '%s' = user_name", n,u.getUserName());
+            Statement s = con.createStatement();
+
+
+            s.executeUpdate(f);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("Username Already exists " + e);
+            return false;
+        }
+    }
+    public int login(String user, String pass){
+        try{
+            String f = String.format("SELECT * FROM usertable WHERE '%s' = user_name AND '%s' = password",user,pass);
+            Statement s = con.createStatement();
+            s.execute(f);
+            //System.out.println("Got to here");
+            ResultSet r = s.getResultSet();
+            r.next();
+            //printResultSet(r);
+            int type = r.getInt(3);
+            if (type > 3)return 0;
+            return type;
+
+        }
+        catch (Exception e){
+            System.out.println("Error in SQL login :"+ e);
+            return 0;
+        }
     }
 
 
@@ -320,6 +398,7 @@ public class SQLManager {
         }
         return null;
     }
+
 
     /*
     returns any table in the database as a list of strings, with

@@ -54,7 +54,7 @@ public class Member extends User {
         while (true){
             try{
                 System.out.println("What would you like to change?");
-                System.out.println("1: First Name, 2: Last Name, 3: Username, 4: Password, (Any other # to cancel)");
+                System.out.println("1: First Name, 2: Last Name, 3: Password, (Any other # to cancel)");
                 switch (in.nextInt()){
                     case 1:
                         System.out.print("Enter new First Name: ");
@@ -64,11 +64,11 @@ public class Member extends User {
                         System.out.print("Enter new Last Name: ");
                         lastName = in.next();
                         break;
+//                    case 3:
+//                        System.out.print("Enter new Username: ");
+//                        userName = in.next();
+//                        break;
                     case 3:
-                        System.out.print("Enter new Username: ");
-                        userName = in.next();
-                        break;
-                    case 4:
                         System.out.print("Enter new password: ");
                         String temp = in.next();
                         System.out.print("\nRe-enter password to confirm : ");
@@ -93,9 +93,13 @@ public class Member extends User {
 
     }
 
-
-
-
+    public String updateUserName(){
+        System.out.print("Input new username : ");
+        Scanner in = new Scanner(System.in);
+        String old = userName;
+        userName = in.next();
+        return old;
+    }
 
     //update the goal stat variables
     public void updateGoalStats(){
