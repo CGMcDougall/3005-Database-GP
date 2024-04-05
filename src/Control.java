@@ -70,6 +70,7 @@ public class Control {
                         m.printDashboard();
                         break;
                     case 3:
+                        //DO SCHEDULE SHIT HERE
                         break;
                     default:
                         break;
@@ -112,7 +113,25 @@ public class Control {
 
 
     public void trainerControl(){
-        //Trainer t = sql.getTrainer(username);
+        Trainer t = sql.getTrainer(username);
+        while (true){
+            try{
+                switch (v.trainerView()){
+                    case 1:
+                        //do nothing for now
+                        break;
+                    case 2:
+                        t.getMemberStats();
+                        break;
+                    default:
+                        System.out.println("Invalid entry");
+                        break;
+                }
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
     }
 
     public void adminControl(){

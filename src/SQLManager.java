@@ -21,13 +21,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-//        String user = "postgres";
-//        String pass = "admin";
-
-        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
-        String pass = "8439";
+        String pass = "admin";
+
+//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String user = "postgres";
+//        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -143,6 +143,26 @@ public class SQLManager {
         }
     }
 
+    public Member getMember(String fn, String ln){
+        try{
+            String f = String.format("SELECT * FROM member WHERE '%s' = first_name AND '%s' = last_name LIMIT 1", fn,ln);
+            Statement s = con.createStatement();
+            s.executeQuery(f);
+
+            ResultSet r = s.getResultSet();
+            r.next();
+
+            Member m = new Member(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5), r.getInt(6));
+            getStats(m);
+            return m;
+
+        }
+        catch (Exception e){
+            System.out.println("Error in overloaded getMember function: " + e);
+            return null;
+        }
+    }
+
 
     /*
         Connor
@@ -161,10 +181,15 @@ public class SQLManager {
         }
     }
 
+    /*
+        Connor
+        function takes a user, and the table assosiated with it, and updates all personal information updated (not including username)
+        returns a boolean if it worked
+     */
 
     public boolean setInfo(User m, String table){
         try{
-            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', user_name = '%s', password = '%s' WHERE '%d' = member_id",table,m.getFirstName(),m.getLastName(),m.getUserName(),m.getPassword(),m.getId());
+            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name",table,m.getFirstName(),m.getLastName(),m.getPassword(),m.getId(),m.getPassword(),m.getUserName());
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return true;
@@ -192,6 +217,8 @@ public class SQLManager {
         }
     }
 
+
+
     /*
         Connor
         Takes a result set and prints out all the columns
@@ -214,20 +241,23 @@ public class SQLManager {
 
     }
 /*
-    TODO: MAKE THIS FUNCTION ALSO UPDATE THE MEMBER TABLE
+    Connor
+    Takes a user, and their old user name (n) and updates both the member table and the user_Table
+    return a bool depending on if it worked
  */
 
     public boolean updateUserName(User u, String n){
         try{
-            String f = String.format("UPDATE usertable SET user_name = '%s' WHERE '%s' = user_name", n,u.getUserName());
+            String f = String.format("UPDATE usertable SET user_name = '%s' WHERE '%s' = user_name; UPDATE member SET user_name = '%s' WHERE '%s' = user_name",u.getUserName(),n,u.getUserName(),n);
             Statement s = con.createStatement();
-
-
             s.executeUpdate(f);
+            //f = String.format("UPDATE member SET user_name = '%s' WHERE '%s' = user_name",u.getUserName(),n);
+            //s.executeUpdate(f);
             return true;
         }
         catch (Exception e){
             System.out.println("Username Already exists " + e);
+
             return false;
         }
     }
