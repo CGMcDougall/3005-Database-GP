@@ -38,6 +38,7 @@ public class Control {
                 }
             }
             catch (Exception e) {
+                in.nextLine();
                 break;
             }
         }
@@ -68,6 +69,7 @@ public class Control {
         }
         catch (Exception e){
             System.out.println("Something went wrong in register : "+e);
+            in.nextLine();
 
         }
     }
@@ -104,6 +106,7 @@ public class Control {
 
             } catch (Exception e) {
                 System.out.println("Error at Login : " + e);
+                in.nextLine();
             }
         }
     }
@@ -114,7 +117,8 @@ public class Control {
         //int choice = v.memberView();
         while(true){
             try{
-                switch (v.memberView()){
+                int c = v.memberView();
+                switch (c){
                     case 0:
                         System.out.println("Invalid input");
                         break;
@@ -133,6 +137,7 @@ public class Control {
             }
             catch (Exception e){
                 System.out.println(e);
+                in.nextLine();
             }
         }
 
@@ -161,6 +166,7 @@ public class Control {
                     return;
                 default:
                     System.out.println("Invalid Entry");
+                    in.nextLine();
                     break;
             }
         }
@@ -180,6 +186,7 @@ public class Control {
                         break;
                     default:
                         System.out.println("Invalid entry");
+                        in.nextLine();
                         break;
                 }
             }

@@ -52,6 +52,7 @@ public class View {
 
 
     public int memberView(){
+        in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule");
         int i = in.nextInt();
@@ -59,13 +60,15 @@ public class View {
     }
 
     public int memberUpdateView(){
+        in.nextLine();
         System.out.println("What would you like to do?");
-        System.out.println("1: Update personal info, 2: Update user_name, 3: Update goals, 4: Update current stats, 5: Back");
+        System.out.println("1: Update personal info, 2: Update user_name, 3: Update stats, 4: Update goals, 5: Back");
         int i = in.nextInt();
         return i;
     }
 
     public  int trainerView(){
+        in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1: Schedule management, 2: Check member profile");
         int i = in.nextInt();

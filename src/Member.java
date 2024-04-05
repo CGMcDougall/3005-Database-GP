@@ -42,6 +42,7 @@ public class Member extends User {
             }
             catch (Exception e){
                 System.out.println("In scheduleManagment : " +e);
+                in.nextLine();
             }
         }
     }
@@ -135,6 +136,7 @@ public class Member extends User {
             }
             catch (Exception e){
                 System.out.println(e);
+                in.nextLine();
             }
         }
 
@@ -150,9 +152,10 @@ public class Member extends User {
 
                 printStats();
 
-                System.out.println("Which goal would you like to change?");
+                System.out.println("Which stat would you like to change?");
                 System.out.println("1: Bench Press, 2: Deadlift, 3: Squat  (Enter number you wish to change, or 4 to cancel)");
-                //int choice = ;
+                int choice = 0;
+
                 switch (in.nextInt()) {
                     case 1:
                         System.out.print("Set new bench : ");
@@ -174,6 +177,7 @@ public class Member extends User {
             }
             catch (Exception e){
                 System.out.println(e);
+                in.nextLine();
             }
         }
 

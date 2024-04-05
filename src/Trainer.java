@@ -33,6 +33,7 @@ public class Trainer extends User {
         }
         catch (Exception e){
             System.out.println("Error in member selection :" + e);
+            in.nextLine();
             return;
         }
 
