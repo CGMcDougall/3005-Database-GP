@@ -16,7 +16,6 @@ public class Admin extends User {
     {
         List<String> maintenanceStatus = sql.getMaintenanceStatus();
         for (String s : maintenanceStatus) {System.out.println(s);}
-
     }
 
     /*
@@ -46,7 +45,6 @@ public class Admin extends User {
         Session s = new Session(sid, trainerId, roomNum, memberIds.get(0), date, startTime, endTime);
         for (int i = 1; i < memberIds.size(); ++i) s.addMember(memberIds.get(i));
 
-        System.out.println("AAAAAAHHHH");
         if (!hasConflict(s)) {
             sql.saveFullSession(s);
         }
@@ -57,12 +55,9 @@ public class Admin extends User {
 
         for (Session existingSession: existingSessions)
         {
-            System.out.println("OOOOHHHHHHHHHH");
-
             if (session.sameRoom(existingSession)/* && session.sameDay(existingSession)*/)
             {
-                System.out.println("UUUUUHHHHHHHHHHHHHHHH");
-                if (session.sameDay(existingSession))
+                if (session.sameDay(existingSession) && session.overlaps(existingSession))
                 {
                     System.out.printf("Error, %s\noverlaps with\n%s\n", session.toString(), existingSession.toString());
                     return true;
