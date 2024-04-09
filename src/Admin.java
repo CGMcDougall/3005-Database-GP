@@ -43,6 +43,17 @@ public class Admin extends User {
         }
         return false; // the new session conflicts with an existing session
     }
+
+    private boolean memberHasConflict()
+    {
+        //driving home, will implement tonight
+        return false;
+    }
+    /*
+    check if the parameter session conflicts with any
+    sessions currently in the schedule
+    returns true if there are conflicts, false if no conflicts
+     */
     private boolean hasConflict(Session session)
     {
         List<Session> existingSessions = sql.getAllSessions();
