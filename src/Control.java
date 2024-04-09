@@ -209,6 +209,11 @@ public class Control {
                 case 4:
                     break;
                 case 5:
+                    List<Session> schedule = sql.getAllSessions();
+                    if (schedule == null) break;
+                    v.showSchedule(schedule);
+                    break;
+                case 6:
                     break;
                 case 0:
                     break;
@@ -223,8 +228,7 @@ public class Control {
 
     }
 
-    //TODO: finish this
-    // use try/catch for date and time funcs
+    //TODO: finish testing this
     private boolean makeSession(Admin a) {
         System.out.println("Please enter the following information:");
         int trainerId = v.getTrainerId();
@@ -233,9 +237,7 @@ public class Control {
             return false;
         }
         int roomNum = v.getRoomNumber();
-
-        //these warnings dont make sense
-        if (!Arrays.asList(Constants.ROOM_NUMS).contains(roomNum)) {
+        if (!(List.of(Constants.ROOM_NUMS).contains(roomNum))) {
             System.out.println("Error, room does not exist");
             return false;
         }

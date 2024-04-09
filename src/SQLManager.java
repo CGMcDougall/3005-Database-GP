@@ -422,13 +422,11 @@ public class SQLManager {
      */
     public boolean intExistsInTableColumn(String table, String column, int value)
     {
-        String query = "SELECT EXISTS (SELECT 1 FROM ? WHERE ? = ?)";
-
+        String query = String.format("SELECT EXISTS (SELECT 1 FROM %s WHERE %s=?)", table, column);
+        System.out.println(value);
         try (PreparedStatement pstatement = con.prepareStatement(query)) {
-            pstatement.setString(1, table);
-            pstatement.setString(2, column);
-            pstatement.setInt(3, value);
-            ResultSet rs = pstatement.executeQuery(query);
+            pstatement.setInt(1, value);
+            ResultSet rs = pstatement.executeQuery();
             if (rs.next()) return rs.getBoolean(1);
 
         } catch (Exception e) {

@@ -124,16 +124,22 @@ add member to an existing class
     }
 
     public int adminMainMenu() {
-        int numOptions = 6;
-        in.nextLine();
+        int numOptions = 7;
         System.out.println("Options:");
         System.out.println("1 -> Create Session");
         System.out.println("2 -> Change Session Details");
         System.out.println("3 -> Delete Session");
         System.out.println("4 -> View Session Details");
-        System.out.println("5 -> Billing and Payment Processing");
+        System.out.println("5 -> Print Schedule");
+        System.out.println("6 -> Billing and Payment Processing");
         System.out.println("0 -> back to login page"); //could also quit the program if easier
         return getInt(0, numOptions);
+    }
+
+    public void showSchedule(List<Session> schedule)
+    {
+        System.out.println("Schedule:");
+        for (Session s: schedule) System.out.println(s);
     }
 
     public int getTrainerId() {
@@ -187,6 +193,7 @@ add member to an existing class
         System.out.print("Member ID to add to session: ");
         memberIds.add(getInt());
         System.out.print("Add more members? [y]es or [n]o: ");
+        in.nextLine();
         if (in.nextLine().charAt(0) == 'y') {
             while (true) {
                 System.out.print("Member ID (or -1 to finish): ");
@@ -206,7 +213,7 @@ add member to an existing class
     handles all errors
      */
     private int getInt(int lowerBound, int upperBound) {
-        int choice = -1;
+        int choice = -2;
         while (choice < lowerBound || choice >= upperBound) {
             try {
                 System.out.print("Enter your selection: ");
@@ -223,8 +230,8 @@ add member to an existing class
     handles all errors
      */
     private int getInt() {
-        int choice = -1;
-        while (choice == -1) {
+        int choice = -2;
+        while (choice == -2) {
             try {
                 System.out.print("Enter your selection: ");
                 choice = in.nextInt();
