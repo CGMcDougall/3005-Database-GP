@@ -12,6 +12,10 @@ public class Admin extends User {
         sql = new SQLManager();
     }
 
+    /*
+    checks equipment meintenance status
+    TODO: rework so that it displays better
+     */
     public void viewEquipmentStatus()
     {
         List<String> maintenanceStatus = sql.getMaintenanceStatus();
@@ -19,26 +23,15 @@ public class Admin extends User {
     }
 
     /*
-    things to check for before creating class:
-    -Trainer is available
-    -Member is available
-    -Room is available
-    #TODO: write addClass function
-           make function to add member to a class
-           make function to check if a room is available at a certain time, if not available return type of event
-           figure out how to add an event that's not a class
+    #TODO: make this check if the trainer and member(s) are available as well
      */
-
-    /*
-    #TODO: addClass may or may not work, test test test
-     */
-    public void addClass(int trainerId, int memberId, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
+    public boolean createSession(int trainerId, int memberId, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
         List<Integer> id = new ArrayList<>();
         id.add(memberId);
-        addClass(trainerId, id, roomNum, date, startTime, endTime);
+        return createSession(trainerId, id, roomNum, date, startTime, endTime);
     }
-    public void addClass(int trainerId, List<Integer> memberIds, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
+    public boolean createSession(int trainerId, List<Integer> memberIds, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
         int sid = sql.getMaxSessionId() + 1;
 
@@ -46,8 +39,9 @@ public class Admin extends User {
         for (int i = 1; i < memberIds.size(); ++i) s.addMember(memberIds.get(i));
 
         if (!hasConflict(s)) {
-            sql.saveFullSession(s);
+            return sql.saveFullSession(s);
         }
+        return false; // the new session conflicts with an existing session
     }
     private boolean hasConflict(Session session)
     {
@@ -65,5 +59,15 @@ public class Admin extends User {
             }
         }
         return false;
+    }
+/* Oliver
+adds a user to a group session
+only works if the session is already a group session
+ */
+    public boolean addUserToClass(int sessionId, int memberId)
+    {
+        Session s = sql.getSession(sessionId);
+        if (!s.isGroupSession()) return false;
+        return sql.saveSession(s, memberId);
     }
 }

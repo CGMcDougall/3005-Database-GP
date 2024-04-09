@@ -1,6 +1,10 @@
 package src;
 
 import java.security.PublicKey;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Control {
@@ -198,6 +202,56 @@ public class Control {
 
     public void adminControl(){
         Admin a = sql.getAdmin(username);
+        while (true)
+        {
+            switch (v.adminMainMenu())
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("If you got here go buy a lottery ticket because the only way it happened" +
+                            " is either if a cosmic ray flipped a bit on your machine or I messed up writing some dead" +
+                            " simple code. Actually nvm it's highly likely that I messed up writing dead simple code" +
+                            " lmao.");
+                    break;
+            }
+        }
+
+    }
+
+    //TODO: finish this
+    // use try/catch for date and time funcs
+    private Session makeSession()
+    {
+        System.out.println("Please enter the following information:");
+        int trainerId = v.getTrainerId();
+        if (!sql.intExistsInTableColumn("Trainer", "trainer_id", trainerId))
+        {
+            System.out.println("Error, trainer does not exist");
+            return null;
+        }
+        int roomNum = v.getRoomNumber();
+        if (!Arrays.asList(Constants.ROOM_NUMS).contains(roomNum))
+        {
+            System.out.println("Error, room does not exist");
+            return null;
+        }
+        LocalDate date = v.getDate();
+        LocalTime startTime = v.getStartTime();
+        LocalTime endTime = v.getEndTime();
+        List<Integer> memberIds = v.getMemberIds();
+
+        return null; //just so there's no errors
 
     }
 

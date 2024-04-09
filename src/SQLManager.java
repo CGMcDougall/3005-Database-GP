@@ -79,22 +79,22 @@ public class SQLManager {
             return null;
         }
     }
+
     /*
      Connor
      using a string username, creates and returns a Trainer, (without stats being initialized)
      returns an trainer
   */
-    public Trainer getTrainer(String username){
-        try{
-            String f = String.format("SELECT * FROM trainer WHERE '%s' = user_name",username);
+    public Trainer getTrainer(String username) {
+        try {
+            String f = String.format("SELECT * FROM trainer WHERE '%s' = user_name", username);
             Statement s = con.createStatement();
             s.execute(f);
             ResultSet r = s.getResultSet();
             r.next();
             Trainer t = new Trainer(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5));
             return t;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in getTrainer: " + e);
             return null;
         }
@@ -105,17 +105,16 @@ public class SQLManager {
       using a string username, creates and returns an Admin, (without stats being initialized)
       returns an admin
    */
-    public Admin getAdmin(String username){
-        try{
-            String f = String.format("SELECT * FROM admin WHERE '%s' = user_name",username);
+    public Admin getAdmin(String username) {
+        try {
+            String f = String.format("SELECT * FROM admin WHERE '%s' = user_name", username);
             Statement s = con.createStatement();
             s.execute(f);
             ResultSet r = s.getResultSet();
             r.next();
             Admin a = new Admin(r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5));
             return a;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in getAdmin: " + e);
             return null;
         }
@@ -144,9 +143,9 @@ public class SQLManager {
         }
     }
 
-    public Member getMember(String fn, String ln){
-        try{
-            String f = String.format("SELECT * FROM member WHERE '%s' = first_name AND '%s' = last_name LIMIT 1", fn,ln);
+    public Member getMember(String fn, String ln) {
+        try {
+            String f = String.format("SELECT * FROM member WHERE '%s' = first_name AND '%s' = last_name LIMIT 1", fn, ln);
             Statement s = con.createStatement();
             s.executeQuery(f);
 
@@ -157,8 +156,7 @@ public class SQLManager {
             getStats(m);
             return m;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in overloaded getMember function: " + e);
             return null;
         }
@@ -167,27 +165,25 @@ public class SQLManager {
     /*
         Connor
      */
-    public boolean newMember(String un, String pass){
-        try{
-            String f = String.format("INSERT INTO usertable VALUES ('%s','%s',1); INSERT INTO member (first_name,last_name,user_name,password,balance) VALUES ('none','none','%s','%s',0)",un,pass,un,pass);
+    public boolean newMember(String un, String pass) {
+        try {
+            String f = String.format("INSERT INTO usertable VALUES ('%s','%s',1); INSERT INTO member (first_name,last_name,user_name,password,balance) VALUES ('none','none','%s','%s',0)", un, pass, un, pass);
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return newStat(getMember(un));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in newMemeber : " + e);
             return false;
         }
     }
 
-    public boolean newStat(Member m){
-        try{
-            String f = String.format("INSERT INTO stats VALUES ('%d','0','0','0','0','0','0')",m.getId());
+    public boolean newStat(Member m) {
+        try {
+            String f = String.format("INSERT INTO stats VALUES ('%d','0','0','0','0','0','0')", m.getId());
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return false;
         }
@@ -216,15 +212,14 @@ public class SQLManager {
         returns a boolean if it worked
      */
 
-    public boolean setInfo(User m, String table){
-        try{
-            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name",table,m.getFirstName(),m.getLastName(),m.getPassword(),m.getId(),m.getPassword(),m.getUserName());
+    public boolean setInfo(User m, String table) {
+        try {
+            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name", table, m.getFirstName(), m.getLastName(), m.getPassword(), m.getId(), m.getPassword(), m.getUserName());
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return true;
-        }
-        catch (Exception e){
-            System.out.println("Error in setInfo : "+e);
+        } catch (Exception e) {
+            System.out.println("Error in setInfo : " + e);
             return false;
         }
     }
@@ -245,7 +240,6 @@ public class SQLManager {
             return false;
         }
     }
-
 
 
     /*
@@ -275,24 +269,24 @@ public class SQLManager {
     return a bool depending on if it worked
  */
 
-    public boolean updateUserName(User u, String n){
-        try{
-            String f = String.format("UPDATE usertable SET user_name = '%s' WHERE '%s' = user_name; UPDATE member SET user_name = '%s' WHERE '%s' = user_name",u.getUserName(),n,u.getUserName(),n);
+    public boolean updateUserName(User u, String n) {
+        try {
+            String f = String.format("UPDATE usertable SET user_name = '%s' WHERE '%s' = user_name; UPDATE member SET user_name = '%s' WHERE '%s' = user_name", u.getUserName(), n, u.getUserName(), n);
             Statement s = con.createStatement();
             s.executeUpdate(f);
             //f = String.format("UPDATE member SET user_name = '%s' WHERE '%s' = user_name",u.getUserName(),n);
             //s.executeUpdate(f);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Username Already exists " + e);
 
             return false;
         }
     }
-    public int login(String user, String pass){
-        try{
-            String f = String.format("SELECT * FROM usertable WHERE '%s' = user_name AND '%s' = password",user,pass);
+
+    public int login(String user, String pass) {
+        try {
+            String f = String.format("SELECT * FROM usertable WHERE '%s' = user_name AND '%s' = password", user, pass);
             Statement s = con.createStatement();
             s.execute(f);
             //System.out.println("Got to here");
@@ -300,12 +294,11 @@ public class SQLManager {
             r.next();
             //printResultSet(r);
             int type = r.getInt(3);
-            if (type > 3)return 0;
+            if (type > 3) return 0;
             return type;
 
-        }
-        catch (Exception e){
-            System.out.println("Error in SQL login :"+ e);
+        } catch (Exception e) {
+            System.out.println("Error in SQL login :" + e);
             return 0;
         }
     }
@@ -334,7 +327,7 @@ public class SQLManager {
     }
 
 
-    /* should work
+    /*
     saves session object to the database. Works for both group
     and individual sessions
     @param s Session object to save
@@ -348,14 +341,14 @@ public class SQLManager {
         return true;
     }
 
-    /* should work
+    /*
         adds a session row to the schedule table. If it is a group session,
         this function has to be called for every member in the group
         @param s session object to save
         @param memberIndex member id to add to schedule
         returns true if successful, false if unsuccessful
          */
-    private boolean saveSession(Session s, int memberId) { //saves one session row (need the 2 funcs cause of group sessions)
+    public boolean saveSession(Session s, int memberId) { //saves one session row (need the 2 funcs cause of group sessions)
         String query = "INSERT INTO Schedule (session_id, member_id, room_number, trainer_id, session_date, start_time, " +
                 "end_time) VALUES (?, ?, ?, ?, ?, ?, ?) on conflict(session_id, member_id) do nothing";
 
@@ -375,13 +368,14 @@ public class SQLManager {
         return false;
     }
 
-    public List<Session> getAllSessions()
-    {
+    /* Oliver
+    returns all sessions stored in database
+     */
+    public List<Session> getAllSessions() {
         List<Integer> ids = getSessionIds();
         if (ids == null) return null;
         List<Session> sessions = new ArrayList<>();
-        for (int id : ids)
-        {
+        for (int id : ids) {
             Session s = getSession(id);
             if (s == null) return null;
             sessions.add(s);
@@ -389,41 +383,9 @@ public class SQLManager {
         return sessions;
     }
 
-    private List<Integer> getSessionIds()
-    {
-        List<Integer> ids = new ArrayList<>();
-        String query = "SELECT DISTINCT session_id from Schedule";
-        try (PreparedStatement pstatement = con.prepareStatement(query))
-        {
-            ResultSet rs = pstatement.executeQuery();
-            while (rs.next())
-            {
-                ids.add(rs.getInt(1));
-            }
-        } catch (Exception e)
-        {
-            System.out.println("Error getting session ids: " + e);
-        }
-        if (ids.isEmpty()) return null;
-        return ids;
-    }
-
-    /*
-    returns the current highest session_id in the Schedule table
-     */
-    public int getMaxSessionId()
-    {
-        String query = "SELECT MAX(session_id) FROM Schedule";
-        try (PreparedStatement pstatement = con.prepareStatement(query))
-        {
-            ResultSet rs = pstatement.executeQuery();
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception e)
-        {
-            System.out.println("Error finding max session id: " + e);
-        }
-        return -1;
-    }
+    /* Oliver
+       gets a session from the schedule table
+        */
     public Session getSession(int sessionId) {
         String query = "SELECT * FROM Schedule WHERE session_id = ?";
         try (PreparedStatement pstatement = con.prepareStatement(query)) {
@@ -437,6 +399,64 @@ public class SQLManager {
         return null;
     }
 
+    /* Oliver
+    returns all session ids in the schedule table
+     */
+    private List<Integer> getSessionIds() {
+        List<Integer> ids = new ArrayList<>();
+        String query = "SELECT DISTINCT session_id from Schedule";
+        try (PreparedStatement pstatement = con.prepareStatement(query)) {
+            ResultSet rs = pstatement.executeQuery();
+            while (rs.next()) {
+                ids.add(rs.getInt(1));
+            }
+        } catch (Exception e) {
+            System.out.println("Error getting session ids: " + e);
+        }
+        if (ids.isEmpty()) return null;
+        return ids;
+    }
+
+    /* Oliver
+    function to check if an integer value exists in a column column in table table
+     */
+    public boolean intExistsInTableColumn(String table, String column, int value)
+    {
+        String query = "SELECT EXISTS (SELECT 1 FROM ? WHERE ? = ?)";
+
+        try (PreparedStatement pstatement = con.prepareStatement(query)) {
+            pstatement.setString(1, table);
+            pstatement.setString(2, column);
+            pstatement.setInt(3, value);
+            ResultSet rs = pstatement.executeQuery(query);
+            if (rs.next()) return rs.getBoolean(1);
+
+        } catch (Exception e) {
+            System.out.println("Error checking if value exists in column: " + e);
+        }
+        return false; //something went wrong, return false
+
+    }
+    /* Oliver
+    returns the current highest session_id in the Schedule table
+    needed to add a session to the schedule
+     */
+    public int getMaxSessionId() {
+        String query = "SELECT MAX(session_id) FROM Schedule";
+        try (PreparedStatement pstatement = con.prepareStatement(query)) {
+            ResultSet rs = pstatement.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            System.out.println("Error finding max session id: " + e);
+        }
+        return -1;
+    }
+
+
+    /* Oliver
+    creates a session object from a resultset returned when querying
+    the database for a given session
+     */
     public Session generateSessionObject(ResultSet rs) {
         try {
             int sid = rs.getInt("session_id");
@@ -458,7 +478,7 @@ public class SQLManager {
     }
 
 
-    /*
+    /* Oliver
     returns any table in the database as a list of strings, with
     each String representing a row in the table
     param is the name of the table in the db to return

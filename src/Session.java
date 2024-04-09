@@ -37,6 +37,10 @@ public class Session {
                 sessionId, trainerId, roomNumber, memberIds.toString(), date.toString(), startTime.toString(), endTime.toString());
     }
 
+    public boolean isValid(int sid, int tid, int rn, int mid, LocalDate d, LocalTime st, LocalTime et)
+    {
+        return true;
+    }
     public boolean sameDay(Session s)
     {
         return (this.date.isEqual(s.getDate()));
@@ -85,5 +89,14 @@ public class Session {
 
     public LocalTime getEndTime() {
         return endTime;
+    }
+
+    public void setMemberIds(List<Integer> memberIds) {
+        this.memberIds = memberIds;
+    }
+
+    public boolean isGroupSession()
+    {
+        return (memberIds.size() > 1);
     }
 }

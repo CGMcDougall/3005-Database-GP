@@ -1,17 +1,23 @@
 package src;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class View {
 
     Scanner in;
+    SQLManager sql;
 
     public View() {
         in = new Scanner(System.in);
-
+        sql = new SQLManager();
     }
 
-    public void banner(){
+    public void banner() {
         System.out.println("\n" +
                 "                                                                                                                                                    \n" +
                 "                                                                                                                                                    \n" +
@@ -49,9 +55,7 @@ public class View {
     }
 
 
-
-
-    public int memberView(){
+    public int memberView() {
         in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule");
@@ -59,7 +63,7 @@ public class View {
         return i;
     }
 
-    public int memberUpdateView(){
+    public int memberUpdateView() {
         in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1: Update personal info, 2: Update user_name, 3: Update stats, 4: Update goals, 5: Back");
@@ -67,7 +71,7 @@ public class View {
         return i;
     }
 
-    public  int trainerView(){
+    public int trainerView() {
         in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1: Schedule management, 2: Check member profile");
@@ -76,6 +80,214 @@ public class View {
     }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Admin views
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*NOTES:
+ROOM BOOKING MANAGEMENT: (i think this should be included in class schedule updating)
+    create class
+    cancel class (new sql manager function w query "DELETE FROM Schedule WHERE session_id=userInputtedId")
+
+Equipment maintenance monitoring:
+    select * from equipment, print it all out nicely with its maintenance
+
+CLASS SCHEDULE UPDATING:
+    change class's room or date/time? to do this:
+        -pull session from db
+        -make necessary changes to it
+        -if changes are all legit: correct way: change it using sql queries, bad way: just fuggin delete it and resave the new one lol
+
+These are the options i believe the admin menu should have
+create session
+change session details
+    change room
+    change date/time
+    change trainer
+    add/remove member
+delete session
+view session details
+billing and payment processing
+
+add member to an existing class
+
+
+ */
+    /*
+    function to get user input to create a session
+    note error checking for this is gross, so it will be done
+    after the user enters all the information
+     */
+
+
+    private void printSchedule(List<Session> sched) {
+        for (Session s : sched) System.out.println(s);
+    }
+
+    public int adminMainMenu() {
+        int numOptions = 6;
+        in.nextLine();
+        System.out.println("Options:");
+        System.out.println("1 -> Create Session");
+        System.out.println("2 -> Change Session Details");
+        System.out.println("3 -> Delete Session");
+        System.out.println("4 -> View Session Details");
+        System.out.println("5 -> Billing and Payment Processing");
+        System.out.println("0 -> back to login page"); //could also quit the program if easier
+        return getInt(0, numOptions);
+    }
+
+    public int getTrainerId() {
+        //get trainer id
+        System.out.println(String.join("\n", sql.getTable("Trainer")));
+        System.out.print("ID of the trainer: ");
+        return getInt();
+    }
+
+    public int getRoomNumber() {
+        //get room number
+        System.out.println(Arrays.toString(Constants.ROOM_NUMS));
+        System.out.print("Room number: ");
+        return getInt();
+    }
+
+    public LocalDate getDate() {
+        //get date
+        System.out.print("Year of session: ");
+        int year = getInt();
+        System.out.print("Month of session: ");
+        int month = getInt(1, 13);
+        System.out.print("Day of session: ");
+        int day = getInt(1, 32);
+        return LocalDate.of(year, month, day);
+    }
+
+    public LocalTime getStartTime() {
+        //get start time
+        System.out.print("Hour of start of session: ");
+        int sHour = getInt(1, 25); //25 since getInt() uses [lowerBound, upperBound) format
+        System.out.print("Minute of start of session: ");
+        int sMinute = getInt(0, 60);
+        return LocalTime.of(sHour, sMinute);
+    }
+
+    public LocalTime getEndTime() {
+        //get end time
+        System.out.print("Hour of end of session: ");
+        int eHour = getInt(1, 25);
+        System.out.print("Minute of end of session: ");
+        int eMinute = getInt(0, 60);
+        return LocalTime.of(eHour, eMinute);
+    }
+
+    public List<Integer> getMemberIds() {
+        List<Integer> memberIds = new ArrayList<>();
+
+        //get member IDs
+        System.out.println(String.join("\n", sql.getTable("Member")));
+        System.out.print("Member ID to add to session: ");
+        memberIds.add(getInt());
+        System.out.print("Add more members? [y]es or [n]o: ");
+        if (in.nextLine().charAt(0) == 'y') {
+            while (true) {
+                System.out.print("Member ID (or -1 to finish): ");
+                int currMemberId = getInt();
+                if (currMemberId == -1) break;
+                memberIds.add(currMemberId);
+            }
+        }
+        return memberIds;
+    }
+
+
+
+
+    /* Oliver
+    function to get integer input for values between 0 and upperBound
+    handles all errors
+     */
+    private int getInt(int lowerBound, int upperBound) {
+        int choice = -1;
+        while (choice < lowerBound || choice >= upperBound) {
+            try {
+                System.out.print("Enter your selection: ");
+                choice = in.nextInt();
+            } catch (Exception e) {
+                in.nextLine();
+            }
+        }
+        return choice;
+    }
+
+    /* Oliver
+    function to get integer input with no upper limit
+    handles all errors
+     */
+    private int getInt() {
+        int choice = -1;
+        while (choice == -1) {
+            try {
+                System.out.print("Enter your selection: ");
+                choice = in.nextInt();
+            } catch (Exception e) {
+                in.nextLine();
+            }
+        }
+        return choice;
+    }
+
 }
 
 
+/*
+    public Session createSession(List<Session> schedule) {
+        int trainerId, roomNum, year, month, day, sHour, sMinute, eHour, eMinute;
+        List<Integer> memberIds = new ArrayList<>();
+        int currMemberId = 0;
+
+        System.out.println("Please enter the following information:");
+
+        //get trainer id
+        System.out.println(String.join("\n", sql.getTable("Trainer")));
+        System.out.print("ID of the trainer: ");
+        trainerId = getInt();
+
+        //get room number
+        System.out.println(Arrays.toString(Constants.ROOM_NUMS));
+        System.out.print("Room number: ");
+        roomNum = getInt();
+
+        //get date
+        System.out.print("Year of session: ");
+        year = getInt();
+        System.out.print("Month of session: ");
+        month = getInt(1, 13);
+        System.out.print("Day of session: ");
+        day = getInt(1, 32);
+
+        //get start time
+        System.out.print("Hour of start of session: ");
+        sHour = getInt(1, 25);    //25 since getInt() uses [lowerBound, upperBound) format
+        System.out.print("Minute of start of session: ");
+        sMinute = getInt(0, 60);
+
+        //get end time
+        System.out.print("Hour of end of session: ");
+        eHour = getInt(1, 25);
+        System.out.print("Minute of end of session: ");
+        eMinute = getInt(0, 60);
+
+        System.out.println(String.join("\n", sql.getTable("Member")));
+        System.out.print("Member ID to add to session: ");
+        memberIds.add(getInt());
+        System.out.print("Add more members? [y]es or [n]o: ");
+        if (in.nextLine().charAt(0) == 'y') {
+            while (true) {
+                System.out.print("Member ID (or -1 to finish): ");
+                currMemberId = getInt();
+                if (currMemberId == -1) break;
+                memberIds.add(currMemberId);
+            }
+        }
+
+    }
+ */
