@@ -16,13 +16,13 @@ public class Control {
     SQLManager sql;
     View v;
 
-    public Control(SQLManager sql){
+    public Control(SQLManager sql) {
         in = new Scanner(System.in);
         this.sql = sql;
         v = new View();
     }
 
-    public void init(){
+    public void init() {
         v.banner();
         Boolean cont = true;
         while (cont) {
@@ -40,8 +40,7 @@ public class Control {
                         System.out.println("Invalid input");
                         break;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 in.nextLine();
                 break;
             }
@@ -49,47 +48,43 @@ public class Control {
 
     }
 
-    public void register(){
-        try{
+    public void register() {
+        try {
             System.out.println("Please create a username");
             String un = in.next();
             System.out.println("Please create a password");
             String p1 = in.next();
             System.out.println("Please confirm password");
             String p2 = in.next();
-            if(!p1.equals(p2)){
+            if (!p1.equals(p2)) {
                 System.out.println("Passwords dont match");
-            }
-            else{
-                if(sql.newMember(un,p1)) {
+            } else {
+                if (sql.newMember(un, p1)) {
                     username = un;
                     memberControl();
-                }
-                else {
+                } else {
                     System.out.println("Something went wrong");
                     return;
                 }
             }
-        }
-        catch (Exception e){
-            System.out.println("Something went wrong in register : "+e);
+        } catch (Exception e) {
+            System.out.println("Something went wrong in register : " + e);
             in.nextLine();
 
         }
     }
 
 
-
-    public void login(){
+    public void login() {
         while (true) {
-            try{
+            try {
                 System.out.print("Input username : ");
                 String usr = in.next();
                 System.out.print("Input password : ");
                 String pass = in.next();
 
                 userType = sql.login(usr, pass);
-                if (userType != 0){
+                if (userType != 0) {
                     username = usr;
                 }
 
@@ -116,13 +111,13 @@ public class Control {
     }
 
 
-    public void memberControl(){
+    public void memberControl() {
         Member m = sql.getMember(username);
         //int choice = v.memberView();
-        while(true){
-            try{
+        while (true) {
+            try {
                 int c = v.memberView();
-                switch (c){
+                switch (c) {
                     case 0:
                         System.out.println("Invalid input");
                         break;
@@ -138,8 +133,7 @@ public class Control {
                     default:
                         break;
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
                 in.nextLine();
             }
@@ -147,16 +141,16 @@ public class Control {
 
     }
 
-    public void memberUpdateControl(Member m){
-        while (true){
-            switch (v.memberUpdateView()){
+    public void memberUpdateControl(Member m) {
+        while (true) {
+            switch (v.memberUpdateView()) {
                 case 1:
                     m.updatePersonalInfo();
-                    sql.setInfo(m,"member");
+                    sql.setInfo(m, "member");
                     break;
                 case 2:
                     String s = m.updateUserName();
-                    sql.updateUserName(m,s);
+                    sql.updateUserName(m, s);
                     break;
                 case 3:
                     m.updateStats();
@@ -177,11 +171,11 @@ public class Control {
     }
 
 
-    public void trainerControl(){
+    public void trainerControl() {
         Trainer t = sql.getTrainer(username);
-        while (true){
-            try{
-                switch (v.trainerView()){
+        while (true) {
+            try {
+                switch (v.trainerView()) {
                     case 1:
                         //do nothing for now
                         break;
@@ -193,20 +187,20 @@ public class Control {
                         in.nextLine();
                         break;
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
             }
         }
     }
 
-    public void adminControl(){
+    public void adminControl() {
         Admin a = sql.getAdmin(username);
-        while (true)
-        {
-            switch (v.adminMainMenu())
-            {
+        while (true) {
+            switch (v.adminMainMenu()) {
                 case 1:
+                    if (!makeSession(a))
+                        System.out.println("Unable to create session");
+                    else System.out.println("Session created and saved");
                     break;
                 case 2:
                     break;
@@ -231,28 +225,37 @@ public class Control {
 
     //TODO: finish this
     // use try/catch for date and time funcs
-    private Session makeSession()
-    {
+    private boolean makeSession(Admin a) {
         System.out.println("Please enter the following information:");
         int trainerId = v.getTrainerId();
-        if (!sql.intExistsInTableColumn("Trainer", "trainer_id", trainerId))
-        {
+        if (!sql.intExistsInTableColumn("Trainer", "trainer_id", trainerId)) {
             System.out.println("Error, trainer does not exist");
-            return null;
+            return false;
         }
         int roomNum = v.getRoomNumber();
-        if (!Arrays.asList(Constants.ROOM_NUMS).contains(roomNum))
-        {
+
+        //these warnings dont make sense
+        if (!Arrays.asList(Constants.ROOM_NUMS).contains(roomNum)) {
             System.out.println("Error, room does not exist");
-            return null;
+            return false;
         }
-        LocalDate date = v.getDate();
-        LocalTime startTime = v.getStartTime();
-        LocalTime endTime = v.getEndTime();
+        LocalDate date;
+        LocalTime startTime;
+        LocalTime endTime;
+        try {
+            date = v.getDate();
+            startTime = v.getStartTime();
+            endTime = v.getEndTime();
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Error, the date or times you entered are invalid: " + e);
+            return false;
+        }
         List<Integer> memberIds = v.getMemberIds();
-
-        return null; //just so there's no errors
-
+        for (int id : memberIds) {
+            if (!sql.intExistsInTableColumn("Member", "member_id", id))
+                return false;
+        }
+        return a.createSession(trainerId, memberIds, roomNum, date, startTime, endTime);
     }
 
 
