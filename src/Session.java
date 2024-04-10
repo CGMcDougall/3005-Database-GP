@@ -41,7 +41,7 @@ public class Session {
     {
         return true;
     }
-    public boolean sameDay(Session s)
+    private boolean sameDay(Session s)
     {
         return (this.date.isEqual(s.getDate()));
     }
@@ -51,9 +51,16 @@ public class Session {
         return this.roomNumber == s.getRoomNumber();
     }
 
+    public boolean overlaps(LocalTime s, LocalTime e)
+    {
+        //assumes the times are on the same date
+        boolean thisOverlapsS = (startTime.isBefore(e) && !startTime.isBefore(s));
+        boolean sOverlapsThis = (s.isBefore(this.endTime) && !s.isBefore(this.startTime));
+        return thisOverlapsS || sOverlapsThis;
+    }
     public boolean overlaps(Session s)
     {
-
+        if (!s.sameDay(this)) return false;
         boolean thisOverlapsS = (startTime.isBefore(s.getEndTime()) && !startTime.isBefore(s.getStartTime()));
         boolean sOverlapsThis = (s.getStartTime().isBefore(this.endTime) && !s.getStartTime().isBefore(this.startTime));
         return thisOverlapsS || sOverlapsThis;

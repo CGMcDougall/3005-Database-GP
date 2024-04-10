@@ -2,7 +2,6 @@ package src;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -368,14 +367,100 @@ public class SQLManager {
         return false;
     }
 
+
+    /*
+    get the trainer's availability as shown in Trainer_Schedule table
+    returns List<LocalTime where each list index is a day of the week
+    */
+    public List<LocalTime> getTrainerAvailability(int trainerId)
+    {
+        String query = "SELECT * FROM Trainer_Schedule WHERE trainer_id=?";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            pstatement.setInt(1, trainerId);
+            ResultSet rs = pstatement.executeQuery();
+            List<LocalTime> availability = new ArrayList<>();
+            while (rs.next())
+            {
+                //start from 2 since first column is trainer_id
+                for (int i = 2; i <= 2 * Constants.DAYS_IN_WEEK + 1; ++i)
+                    availability.add(rs.getTime(i).toLocalTime());
+            }
+            return availability;
+        } catch (Exception e) {
+            System.out.println("Error getting trainer availability: " + e);
+        }
+        return null;
+    }
+
+    /*
+       returns sessions that the trainer with trainer_id trainerId
+       is teaching
+        */
+    public List<Session> getTrainerSchedule(int trainerId)
+    {
+        String query = "SELECT session_id FROM Schedule WHERE trainer_id=?";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            pstatement.setInt(1, trainerId);
+            ResultSet rs = pstatement.executeQuery();
+            List<Integer> sessionIds = new ArrayList<>();
+            while (rs.next()) {
+                sessionIds.add(rs.getInt("session_id"));
+            }
+            return getScheduleFromSessionIds(sessionIds);
+        } catch (Exception e) {
+            System.out.println("Error getting trainer schedule: " + e);
+        }
+        return null;
+    }
+
+    /*
+    returns sessions that the member with member_id memberId
+    is registered in, including all the other members that are
+    registered in the session if it is a group session
+     */
+    public List<Session> getMemberSchedule(int memberId)
+    {
+        String query = "SELECT session_id " +
+                "FROM Schedule " +
+                "WHERE session_id IN (" +
+                "    SELECT session_id" +
+                "    FROM Schedule" +
+                "    WHERE member_id = ?" +
+                ")";
+        try (PreparedStatement pstatement = con.prepareStatement(query))
+        {
+            pstatement.setInt(1, memberId);
+            ResultSet rs = pstatement.executeQuery();
+            List<Integer> sessionIds = new ArrayList<>();
+            while (rs.next()) {
+                sessionIds.add(rs.getInt("session_id"));
+            }
+            return getScheduleFromSessionIds(sessionIds);
+        } catch (Exception e) {
+            System.out.println("Error getting member schedule: " + e);
+        }
+        return null;
+    }
+
+
     /* Oliver
     returns all sessions stored in database
      */
-    public List<Session> getAllSessions() {
+    public List<Session> getSchedule() {
         List<Integer> ids = getSessionIds();
-        if (ids == null) return null;
+        return getScheduleFromSessionIds(ids);
+    }
+
+    /*
+    given a list of session ids, this function returns a list of Sessions
+    corresponding to those session ids
+     */
+    private List<Session> getScheduleFromSessionIds(List<Integer> sessionIds) {
+        if (sessionIds == null) return null;
         List<Session> sessions = new ArrayList<>();
-        for (int id : ids) {
+        for (int id : sessionIds) {
             Session s = getSession(id);
             if (s == null) return null;
             sessions.add(s);
@@ -452,8 +537,8 @@ public class SQLManager {
 
 
     /* Oliver
-    creates a session object from a resultset returned when querying
-    the database for a given session
+    creates a session object from a resultset. the resultset
+    parameter should contain only entries for one session
      */
     public Session generateSessionObject(ResultSet rs) {
         try {

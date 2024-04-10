@@ -1,9 +1,7 @@
 package src;
 
-import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -209,7 +207,7 @@ public class Control {
                 case 4:
                     break;
                 case 5:
-                    List<Session> schedule = sql.getAllSessions();
+                    List<Session> schedule = sql.getSchedule();
                     if (schedule == null) break;
                     v.showSchedule(schedule);
                     break;

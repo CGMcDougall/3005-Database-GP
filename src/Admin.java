@@ -1,5 +1,6 @@
 package src;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -33,36 +34,95 @@ public class Admin extends User {
     }
     public boolean createSession(int trainerId, List<Integer> memberIds, int roomNum, LocalDate date, LocalTime startTime, LocalTime endTime)
     {
-        int sid = sql.getMaxSessionId() + 1;
+        int sid = sql.getMaxSessionId() + 1; //get next session id
 
+        //make Session object
         Session s = new Session(sid, trainerId, roomNum, memberIds.get(0), date, startTime, endTime);
         for (int i = 1; i < memberIds.size(); ++i) s.addMember(memberIds.get(i));
 
-        if (!hasConflict(s)) {
-            return sql.saveFullSession(s);
+        //load schedule from database
+        List<Session> schedule = sql.getSchedule();
+        if (schedule == null) return false;
+
+        //check if the new session conflicts with any of the existing sessions in the schedule
+        if (hasConflict(s, schedule)) {
+            return false;
         }
-        return false; // the new session conflicts with an existing session
+        for (int mid : memberIds)
+        {
+            if (!memberAvailable(mid, s)) {
+                System.out.println("Member is not available at this time");
+                return false;   //maybe change this later so it only aborts if all members cant join
+            }
+        }
+
+        if (!trainerAvailable(trainerId, s)) {
+            System.out.println("Trainer is not available at this time");
+            return false;
+        }
+
+        return sql.saveFullSession(s);
     }
 
-    private boolean memberHasConflict()
+    /* !!UNTESTED!!
+    checks if the new session conflicts with the member's schedule
+     */
+    private boolean memberAvailable(int memberId, Session newSession)
     {
-        //driving home, will implement tonight
-        return false;
+        List<Session> memberSchedule = sql.getMemberSchedule(memberId);
+        for (Session s : memberSchedule)
+        {
+            if (newSession.overlaps(s)) //check if newSession fits conflicts with s
+                return false;
+        }
+        return true;
+    }
+
+
+    /* !!UNTESTED!!
+    checks if the new session conflicts with the trainer's schedule
+    and if it is within the trainer's working hours
+     */
+    private boolean trainerAvailable(int trainerId, Session newSession)
+    {
+        // check if trainer has any conflicting sessions with newSession
+        List<Session> trainerSchedule = sql.getTrainerSchedule(trainerId);
+        for (Session s : trainerSchedule)
+        {
+            if (newSession.overlaps(s))
+                return false;
+        }
+//        System.out.println("TRAINER");
+        List<LocalTime> availability = sql.getTrainerAvailability(trainerId);
+        DayOfWeek dayOfWeek = newSession.getDate().getDayOfWeek();
+
+        // get the trainer's working hours for newSession's date
+//        System.out.println(availability.toString());
+//        System.out.println(dayOfWeek.getValue() - 1);
+//        System.out.println(dayOfWeek.getValue() + 7 - 1);
+
+        LocalTime startTime = availability.get(dayOfWeek.getValue() - 1);
+        LocalTime endTime= availability.get(dayOfWeek.getValue() + 7 - 1);
+//        System.out.println(startTime);
+//        System.out.println(endTime);
+        LocalTime sessionStartTime = newSession.getStartTime();
+        LocalTime sessionEndTime = newSession.getEndTime();
+
+        return (sessionStartTime.isAfter(startTime) || sessionStartTime.equals(startTime)
+                && (sessionEndTime.isBefore(endTime) || sessionEndTime.equals(startTime)));
     }
     /*
     check if the parameter session conflicts with any
     sessions currently in the schedule
     returns true if there are conflicts, false if no conflicts
      */
-    private boolean hasConflict(Session session)
+    private boolean hasConflict(Session session, List<Session> schedule)
     {
-        List<Session> existingSessions = sql.getAllSessions();
-
-        for (Session existingSession: existingSessions)
+        for (Session existingSession: schedule)
         {
-            if (session.sameRoom(existingSession)/* && session.sameDay(existingSession)*/)
+            if (session.sameRoom(existingSession))
             {
-                if (session.sameDay(existingSession) && session.overlaps(existingSession))
+                if (session.overlaps(existingSession))
                 {
                     System.out.printf("Error, %s\noverlaps with\n%s\n", session.toString(), existingSession.toString());
                     return true;
@@ -81,4 +141,5 @@ only works if the session is already a group session
         if (!s.isGroupSession()) return false;
         return sql.saveSession(s, memberId);
     }
+
 }
