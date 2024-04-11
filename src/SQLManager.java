@@ -20,13 +20,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-//        String user = "postgres";
-//        String pass = "admin";
-
-        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
-        String pass = "8439";
+        String pass = "admin";
+
+//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String user = "postgres";
+//        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -144,7 +144,7 @@ public class SQLManager {
 
     public Member getMember(String fn, String ln) {
         try {
-            String f = String.format("SELECT * FROM member WHERE '%s' = first_name AND '%s' = last_name LIMIT 1", fn, ln);
+            String f = String.format("SELECT * FROM member WHERE UPPER('%s') = UPPER(first_name) AND UPPER('%s') = UPPER(last_name) LIMIT 1", fn, ln);
             Statement s = con.createStatement();
             s.executeQuery(f);
 

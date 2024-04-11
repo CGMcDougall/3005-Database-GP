@@ -1,4 +1,6 @@
 package src;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 //CONNOR WILL WRITE THIS
@@ -203,6 +205,42 @@ public class Member extends User {
         System.out.println(p);
         System.out.println("-----------------");
     }
+
+    public void makeSession(){
+
+        Scanner in = new Scanner(System.in);
+
+        int mid = id;
+
+        try{
+            System.out.println("Enter when you would like to schedule the session");
+            System.out.println("   Format: (DD-MM-YYYY");
+
+            SimpleDateFormat formatter =new SimpleDateFormat("DD-MM-YYYY");
+
+            String d = in.next();
+            Date startDate = formatter.parse(d);
+
+            System.out.println("Enter when you would like the session to start (Time)");
+
+//            d = in.next();
+//            Date endDate = formatter.parse(d);
+
+
+            System.out.println("Which trainer do you want? (Enter their ID)");
+            int tid = in.nextInt();
+
+
+
+
+
+        }
+        catch (Exception e){
+            System.out.println(e);
+            in.nextLine();
+        }
+    }
+
 
     public int getGoalBench() {
         return goalBench;

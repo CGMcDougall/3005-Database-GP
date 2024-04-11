@@ -58,7 +58,7 @@ public class View {
     public int memberView() {
         in.nextLine();
         System.out.println("What would you like to do?");
-        System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule");
+        System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule, 4: Close");
         int i = in.nextInt();
         return i;
     }

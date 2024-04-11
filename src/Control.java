@@ -128,6 +128,9 @@ public class Control {
                     case 3:
                         //DO SCHEDULE SHIT HERE
                         break;
+                    case 4:
+                        System.out.println("System Closed");
+                        System.exit(0);
                     default:
                         break;
                 }
