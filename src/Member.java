@@ -1,6 +1,10 @@
 package src;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Scanner;
 
 //CONNOR WILL WRITE THIS
@@ -206,7 +210,7 @@ public class Member extends User {
         System.out.println("-----------------");
     }
 
-    public void makeSession(){
+    public Session makeSession(){
 
         Scanner in = new Scanner(System.in);
 
@@ -214,14 +218,26 @@ public class Member extends User {
 
         try{
             System.out.println("Enter when you would like to schedule the session");
-            System.out.println("   Format: (DD-MM-YYYY");
+            System.out.println("   Format: (YYYY-MM-DD)");
 
-            SimpleDateFormat formatter =new SimpleDateFormat("DD-MM-YYYY");
+            //SimpleDateFormat formatter =new SimpleDateFormat("DD-MM-YYYY");
+            //DateTimeFormatter dt = DateTimeFormatter.ofPattern("DD-MM-YYYY");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("k-mm");
 
             String d = in.next();
-            Date startDate = formatter.parse(d);
+            LocalDate startDate = LocalDate.parse(d);
 
-            System.out.println("Enter when you would like the session to start (Time)");
+            System.out.println("Enter when you would like the session to start (24/h clock)");
+            System.out.print("k-mm :  ");
+            String t = in.next();
+
+            LocalTime st = LocalTime.parse(t,timeFormatter);
+
+            System.out.println("When would you like the session to end?");
+            System.out.print("k-mm :  ");
+            t = in.next();
+
+            LocalTime et = LocalTime.parse(t,timeFormatter);
 
 //            d = in.next();
 //            Date endDate = formatter.parse(d);
@@ -230,8 +246,11 @@ public class Member extends User {
             System.out.println("Which trainer do you want? (Enter their ID)");
             int tid = in.nextInt();
 
+            System.out.println("Which room? (#)");
+            int rid = in.nextInt();
 
-
+            Session s = new Session(0,tid,rid,id,startDate,st,et);
+            return s;
 
 
         }
@@ -239,6 +258,7 @@ public class Member extends User {
             System.out.println(e);
             in.nextLine();
         }
+        return null;
     }
 
 

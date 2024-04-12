@@ -106,4 +106,8 @@ public class Session {
     {
         return (memberIds.size() > 1);
     }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
 }

@@ -126,7 +126,7 @@ public class Control {
                         m.printDashboard();
                         break;
                     case 3:
-                        //DO SCHEDULE SHIT HERE
+                        memberScheduleControl(m);
                         break;
                     case 4:
                         System.out.println("System Closed");
@@ -167,6 +167,37 @@ public class Control {
                     System.out.println("Invalid Entry");
                     in.nextLine();
                     break;
+            }
+        }
+    }
+
+    public void memberScheduleControl(Member m){
+        while(true){
+            switch (v.memberScheduleView()){
+                case 1:
+                    for(Session s : sql.getMemberSchedule(m.getId())){
+                        System.out.println(s.toString() + "\n");
+                    }
+                    break;
+                case 2:
+                    Session s = m.makeSession();
+                    if(s == null) {
+                        System.out.println("Something went wrong");
+                        break;
+                    }
+
+                    s.toString();
+
+                    int sid = sql.getMaxSessionId() + 1;
+                    s.setSessionId(sid);
+                    sql.saveFullSession(s);
+
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    System.out.println("Back");
+                    return;
             }
         }
     }

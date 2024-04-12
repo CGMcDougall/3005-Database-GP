@@ -71,6 +71,15 @@ public class View {
         return i;
     }
 
+    public int memberScheduleView(){
+        in.nextLine();
+        System.out.println("What would you like to do?");
+        System.out.println("1. View personal schedule, 2. Plan a new Session, 3. Drop a session, 4. Back");
+        int i = in.nextInt();
+        return i;
+    }
+
+
     public int trainerView() {
         in.nextLine();
         System.out.println("What would you like to do?");
