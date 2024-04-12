@@ -229,6 +229,11 @@ public class Control {
 
     }
 
+    private boolean changeSessionDetails()
+    {
+        return false;
+    }
+
     //TODO: finish testing this
     private boolean makeSession(Admin a) {
         System.out.println("Please enter the following information:");

@@ -20,13 +20,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-        String user = "postgres";
-        String pass = "admin";
-
-//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
 //        String user = "postgres";
-//        String pass = "8439";
+//        String pass = "admin";
+
+        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String user = "postgres";
+        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
