@@ -86,6 +86,8 @@ public class Control {
                     username = usr;
                 }
 
+                //System.out.println("HOOLE");
+
                 switch (userType) {
                     case 1:
                         memberControl();
@@ -203,6 +205,8 @@ public class Control {
                 case 4:
                     System.out.println("Back");
                     return;
+                default:
+                    break;
             }
         }
     }
@@ -214,7 +218,7 @@ public class Control {
             try {
                 switch (v.trainerView()) {
                     case 1:
-                        //do nothing for now
+                        trainerSchedule(t);
                         break;
                     case 2:
                         t.getMemberStats();
@@ -228,6 +232,29 @@ public class Control {
                 System.out.println(e);
             }
         }
+    }
+
+    public void trainerSchedule(Trainer t){
+        while (true){
+            switch (v.trainerScheduleView()){
+                case 1:
+                    System.out.println("---Printing Schedule---\n");
+                    t.getAvailability();
+                    break;
+                case 2:
+                    if(t.adjustSchedule())sql.setTrainerAvailability(t);
+                    break;
+                case 3:
+                    System.out.println("Back");
+                    return;
+                default:
+                    break;
+            }
+
+        }
+
+
+
     }
 
     public void adminControl() {

@@ -94,6 +94,13 @@ public class View {
         return i;
     }
 
+    public int trainerScheduleView(){
+        in.nextLine();
+        System.out.println("What would you like to do?");
+        System.out.println("1. View current schedule, 2. Alter current schedule, 3. Back");
+        return in.nextInt();
+    }
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Admin views

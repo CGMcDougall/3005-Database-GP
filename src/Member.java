@@ -228,13 +228,13 @@ public class Member extends User {
             LocalDate startDate = LocalDate.parse(d);
 
             System.out.println("Enter when you would like the session to start (24/h clock)");
-            System.out.print("k-mm :  ");
+            System.out.print("hh-mm :  ");
             String t = in.next();
 
             LocalTime st = LocalTime.parse(t,timeFormatter);
 
             System.out.println("When would you like the session to end?");
-            System.out.print("k-mm :  ");
+            System.out.print("hh-mm :  ");
             t = in.next();
 
             LocalTime et = LocalTime.parse(t,timeFormatter);

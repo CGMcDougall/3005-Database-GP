@@ -383,8 +383,10 @@ public class SQLManager {
             while (rs.next())
             {
                 //start from 2 since first column is trainer_id
-                for (int i = 2; i <= 2 * Constants.DAYS_IN_WEEK + 1; ++i)
+                for (int i = 2; i <= 15; ++i){
                     availability.add(rs.getTime(i).toLocalTime());
+                }
+
             }
             return availability;
         } catch (Exception e) {
@@ -392,6 +394,37 @@ public class SQLManager {
         }
         return null;
     }
+
+    public boolean setTrainerAvailability(Trainer t){
+        try{
+            TrainerSchedule ts = t.ts;
+            String f = String.format("UPDATE Trainer_Schedule SET " +
+                    "monday_start_time = '%s'," +
+                    "tuesday_start_time = '%s'," +
+                    "wednesday_start_time = '%s'," +
+                    "thursday_start_time = '%s'," +
+                    "friday_start_time = '%s'," +
+                    "saturday_start_time = '%s'," +
+                    "sunday_start_time = '%s'," +
+                    "monday_end_time = '%s'," +
+                    "tuesday_end_time = '%s'," +
+                    "wednesday_end_time = '%s'," +
+                    "thursday_end_time = '%s'," +
+                    "friday_end_time = '%s'," +
+                    "saturday_end_time = '%s'," +
+                    "sunday_end_time = '%s' WHERE trainer_id = '%s'",ts.schedule[0],ts.schedule[1],ts.schedule[2],ts.schedule[3],ts.schedule[4],ts.schedule[5],ts.schedule[6],ts.schedule[7],ts.schedule[8],ts.schedule[9],ts.schedule[10],ts.schedule[11],ts.schedule[12],ts.schedule[13],t.getId());
+
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+            return true;
+
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
 
     /*
        returns sessions that the trainer with trainer_id trainerId
