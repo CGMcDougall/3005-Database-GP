@@ -79,6 +79,12 @@ public class View {
         return i;
     }
 
+    public int dropSession(){
+        in.nextLine();
+        System.out.println("What session would you like to drop (0 to cancel)");
+        return in.nextInt();
+    }
+
 
     public int trainerView() {
         in.nextLine();

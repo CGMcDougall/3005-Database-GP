@@ -182,11 +182,9 @@ public class Control {
                 case 2:
                     Session s = m.makeSession();
                     if(s == null) {
-                        System.out.println("Something went wrong");
+                        System.out.println("Session not created");
                         break;
                     }
-
-                    s.toString();
 
                     int sid = sql.getMaxSessionId() + 1;
                     s.setSessionId(sid);
@@ -194,6 +192,13 @@ public class Control {
 
                     break;
                 case 3:
+                    int SID = v.dropSession();
+                    if(SID == 0){
+                        System.out.println("Canceled");
+                        break;
+                    }
+                    if(sql.dropSession(m.getId(),SID))System.out.println("Session dropped successfully!");
+                    else System.out.println("Something went wrong");
                     break;
                 case 4:
                     System.out.println("Back");

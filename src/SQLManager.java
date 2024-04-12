@@ -20,13 +20,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-//        String user = "postgres";
-//        String pass = "admin";
-
-        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
-        String pass = "8439";
+        String pass = "admin";
+
+//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String user = "postgres";
+//        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -559,6 +559,28 @@ public class SQLManager {
         }
         return null;
     }
+
+    /*
+    Connor
+
+    Delete an entry in the Session table, using a MemberId and Session ID as the key
+    returns true if successful
+     */
+
+    public boolean dropSession(int mid, int sid){
+        try{
+            String f = String.format("DELETE FROM Schedule WHERE '%s' = session_id AND '%s' = member_id",sid,mid);
+            Statement s = con.createStatement();
+            s.executeUpdate(f);
+
+            return true;
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
 
 
     /* Oliver

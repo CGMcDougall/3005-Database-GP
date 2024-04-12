@@ -250,7 +250,10 @@ public class Member extends User {
             int rid = in.nextInt();
 
             Session s = new Session(0,tid,rid,id,startDate,st,et);
-            return s;
+
+            if(isValid(s))return s;
+            else return null;
+
 
 
         }
