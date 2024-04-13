@@ -32,6 +32,8 @@ Files:
         - View
           - Manages the console interface, and takes input from console and supplies it to control class.
         - SQLManager
-          - Manages all interaction between code and sql database. 
+          - Manages all interaction between code and sql database.
+  - Models/
+     - Contains both an ER diagram and relational schema  
       
       
