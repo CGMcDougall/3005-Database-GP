@@ -11,10 +11,10 @@ Description:
 
 Files:
 
-  SQL/ 
-      Contains the SQL code for the database init and sample data. 
-  src/ 
-      Notable classes
+  - SQL/ 
+      - Contains the SQL code for the database init and sample data. 
+  - src/ 
+      - Notable classes
         Member 
           Contains the functionality for all member class requirments
              Made by Connor
