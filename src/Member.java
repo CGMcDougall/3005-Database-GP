@@ -189,9 +189,36 @@ public class Member extends User {
 
     }
 
+    public void pay(){
+        Scanner in = new Scanner(System.in);
+
+        if(bal >= 0){
+            System.out.println("Balance is already positive");
+            return;
+        }
+
+        try{
+            System.out.println("How much would you like to pay?");
+            int payment = in.nextInt();
+            bal += payment;
+            if(bal > 0){
+                int oldBal = bal - payment;
+                int amtPayed = payment-oldBal;
+                System.out.println("You overpaid by " + amtPayed);
+
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+
     public void printDashboard(){
         String p = String.format("%s %s\n", firstName, lastName);
-               p +=String.format("  %s, ID: %o\n\n",userName,id);
+               p +=String.format("  %s, ID: %o\n",userName,id);
+               p+=String.format("   Bal: %d\n\n",bal);
                p +=String.format("Current Schedule: \n");
                //Schdule stuff here maybe?
                p +=String.format("Exercise Statistics:");
@@ -208,6 +235,33 @@ public class Member extends User {
                p +=String.format("   Current squat:    %d ; Goal squat:    %d",squat,goalSquat);
         System.out.println(p);
         System.out.println("-----------------");
+    }
+
+    public boolean joinSession(){
+
+        Scanner in = new Scanner(System.in);
+
+        try{
+            System.out.println("Which session would you like to join (Session id)");
+            int sid = in.nextInt();
+
+            Session s = sql.getSession(sid);
+            if (s != null && memberAvailable(id,s)){
+                //Session n = new Session(s.getSessionId(),s.getTrainerId(),s.getRoomNumber(),id,s.getDate(),s.getStartTime(),s.getEndTime());
+                sql.saveSessionRow(s,id);
+
+                //adjust balance
+                bal -= 10;
+
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
     }
 
     public Session makeSession(){
@@ -251,6 +305,9 @@ public class Member extends User {
 
             Session s = new Session(0,tid,rid,id,startDate,st,et);
 
+            //adjust balance
+            bal -= 10;
+
             if(isValid(s))return s;
             else return null;
 
@@ -286,5 +343,9 @@ public class Member extends User {
 
     public int getSquat() {
         return squat;
+    }
+
+    public int getBal() {
+        return bal;
     }
 }

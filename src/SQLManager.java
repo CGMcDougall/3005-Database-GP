@@ -1,5 +1,6 @@
 package src;
 
+import javax.sound.midi.MetaMessage;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,13 +29,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-//        String user = "postgres";
-//        String pass = "admin";
-
-        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String url = "jdbc:postgresql://localhost:5432/3005_GP";
         String user = "postgres";
-        String pass = "8439";
+        String pass = "admin";
+
+//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String user = "postgres";
+//        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -219,9 +220,9 @@ public class SQLManager {
         returns a boolean if it worked
      */
 
-    public boolean setInfo(User m, String table) {
+    public boolean setInfo(Member m, String table) {
         try {
-            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name", table, m.getFirstName(), m.getLastName(), m.getPassword(), m.getId(), m.getPassword(), m.getUserName());
+            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s', balance = '%d' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name", table, m.getFirstName(), m.getLastName(), m.getPassword(), m.getId(), m.getPassword(),m.getBal(),m.getUserName());
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return true;
