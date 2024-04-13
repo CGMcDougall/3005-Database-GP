@@ -15,23 +15,23 @@ Files:
       - Contains the SQL code for the database init and sample data. 
   - src/ 
       - Notable classes
-        -Member 
-          -Contains the functionality for all member class requirments
-             -Made by Connor
-        -Admin
-           -Contains the functionality for all admin class requirments
-             -Made by Oliver
-        -Trainer
-           -Contains the functionality for all trainer class requirments
-             -Made by Connor
-        -Session
-          -Contains the functionailty for all the Schedule requirments
-             -Made by Oliver
-        -Control
-          -The control class manages the overall program and flow
-        -View
-          -Manages the console interface, and takes input from console and supplies it to control class.
-        -SQLManager
-          -Manages all interaction between code and sql database. 
+        - Member 
+          - Contains the functionality for all member class requirments
+             - Made by Connor
+        - Admin
+           - Contains the functionality for all admin class requirments
+             - Made by Oliver
+        - Trainer
+           - Contains the functionality for all trainer class requirments
+             - Made by Connor
+        - Session
+          - Contains the functionailty for all the Schedule requirments
+             - Made by Oliver
+        - Control
+          - The control class manages the overall program and flow
+        - View
+          - Manages the console interface, and takes input from console and supplies it to control class.
+        - SQLManager
+          - Manages all interaction between code and sql database. 
       
       
