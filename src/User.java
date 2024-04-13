@@ -54,61 +54,55 @@ this should be everything
         }
 
         //check if the new session conflicts with any of the existing sessions in the schedule
-        if (hasConflict(s, schedule)) {
-            return false;
-        }
 
-        for (int mid : s.getMemberIds()) {
-            if (!memberAvailable(mid, s)) {
-                System.out.println("Member is not available at this time");
-                return false;   //maybe change this later so it only aborts if all members cant join
-            }
-        }
+        if (!membersAvailable(s.getMemberIds(), s))
+            return false;
 
         if (!trainerAvailable(s.getTrainerId(), s)) {
             System.out.println("Trainer is not available at this time");
             return false;
         }
-        return true;
+
+        return !hasConflict(s, schedule);
     }
 
     /* !!UNTESTED!!
     checks if the new session conflicts with the member's schedule
      */
-    protected boolean memberAvailable(int memberId, Session newSession) {
+    public boolean memberAvailable(int memberId, Session newSession) {
         SessionList memberSchedule = sql.getMemberSchedule(memberId);
         for (Session s : memberSchedule) {
-            if (newSession.overlaps(s)) //check if newSession fits conflicts with s
+            if (!newSession.equals(s) && newSession.overlaps(s)) { //check if newSession fits conflicts with s
+                System.out.println("Member is not available at this time");
                 return false;
+            }
         }
         return true;
     }
 
+    public boolean membersAvailable(List<Integer> memberIds, Session s) {
+        for (int mid : memberIds)
+            if (!memberAvailable(mid, s)) return false;
+        return true;
+    }
 
     /* !!UNTESTED!!
     checks if the new session conflicts with the trainer's schedule
     and if it is within the trainer's working hours
      */
-    private boolean trainerAvailable(int trainerId, Session newSession) {
+    public boolean trainerAvailable(int trainerId, Session newSession) {
         // check if trainer has any conflicting sessions with newSession
         SessionList trainerSchedule = sql.getTrainerSchedule(trainerId);
         for (Session s : trainerSchedule) {
-            if (newSession.overlaps(s))
+            if (!newSession.equals(s) && newSession.overlaps(s))
                 return false;
         }
-//        System.out.println("TRAINER");
         List<LocalTime> availability = sql.getTrainerAvailability(trainerId);
         DayOfWeek dayOfWeek = newSession.getDate().getDayOfWeek();
 
         // get the trainer's working hours for newSession's date
-//        System.out.println(availability.toString());
-//        System.out.println(dayOfWeek.getValue() - 1);
-//        System.out.println(dayOfWeek.getValue() + 7 - 1);
-
         LocalTime startTime = availability.get(dayOfWeek.getValue() - 1);
         LocalTime endTime = availability.get(dayOfWeek.getValue() + 7 - 1);
-//        System.out.println(startTime);
-//        System.out.println(endTime);
         LocalTime sessionStartTime = newSession.getStartTime();
         LocalTime sessionEndTime = newSession.getEndTime();
 
@@ -121,9 +115,9 @@ this should be everything
     sessions currently in the schedule
     returns true if there are conflicts, false if no conflicts
      */
-    private boolean hasConflict(Session session, SessionList schedule) {
+    public boolean hasConflict(Session session, SessionList schedule) {
         for (Session existingSession : schedule) {
-            if (session.sameRoom(existingSession)) {
+            if (session.sameRoom(existingSession) && !session.equals(existingSession)) {
                 if (session.overlaps(existingSession)) {
                     System.out.printf("Error, %s\noverlaps with\n%s\n", session.toString(), existingSession.toString());
                     return true;

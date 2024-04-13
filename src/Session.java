@@ -54,8 +54,13 @@ public class Session {
 
     public boolean overlaps(Session s) {
         if (!s.sameDay(this)) return false;
-        boolean thisOverlapsS = (startTime.isBefore(s.getEndTime()) && !startTime.isBefore(s.getStartTime()));
-        boolean sOverlapsThis = (s.getStartTime().isBefore(this.endTime) && !s.getStartTime().isBefore(this.startTime));
+        boolean thisOverlapsS = (!startTime.equals(s.getEndTime())
+                || startTime.isBefore(s.getEndTime())
+                && !startTime.isBefore(s.getStartTime()));
+
+        boolean sOverlapsThis = (!s.getStartTime().equals(endTime)
+                || s.getStartTime().isBefore(this.endTime)
+                && !s.getStartTime().isBefore(this.startTime));
         return thisOverlapsS || sOverlapsThis;
     }
 

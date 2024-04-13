@@ -155,8 +155,24 @@ add member to an existing class
         System.out.println("5 -> Print Schedule");
         System.out.println("6 -> Billing and Payment Processing");
         System.out.println("7 -> Monitor Equipment Maintenance");
-        System.out.println("0 -> back to login page"); //could also quit the program if easier
+        System.out.println("0 -> Exit Program"); //could also quit the program if easier
         return getInt(0, numOptions);
+    }
+
+
+    public String pickMember(List<String> members)
+    {
+        in.nextLine();
+        System.out.println(String.join("\n", members));
+        System.out.print("Please eneter the username of the member: ");
+        try {
+            String username = in.nextLine();
+            return username;
+        } catch (Exception e)
+        {
+            System.out.println("Invalid input " + e);
+            return null;
+        }
     }
 
     public int pickSessionId(SessionList schedule)
@@ -175,7 +191,7 @@ add member to an existing class
         System.out.println("6 -> Start Time");
         System.out.println("7 -> End Time");
         System.out.println("0 -> Back to Menu");
-        return getInt(0, 7);
+        return getInt(0, 8);
     }
 
     public Session chooseSession(SessionList schedule)
@@ -256,14 +272,14 @@ add member to an existing class
     }
 
 
-    public List<Integer> getMemberIds() {
+    public List<Integer> getMemberIds(List<String> members) {
         List<Integer> memberIds = new ArrayList<>();
 
         //get member IDs
-        System.out.println(String.join("\n", sql.getTable("Member")));
-        System.out.print("Member ID to add to session: ");
+        System.out.println(String.join("\n", members));
+        System.out.print("Member ID: ");
         memberIds.add(getInt());
-        System.out.print("Add more members? [y]es or [n]o: ");
+        System.out.print("Pick more members? [y]es or [n]o: ");
         in.nextLine();
         if (in.nextLine().charAt(0) == 'y') {
             while (true) {

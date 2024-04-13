@@ -191,13 +191,13 @@ public class Control {
                         System.out.println("Session not created");
                         break;
                     }
-                    sql.setInfo(m,"member");
+                    sql.setInfo(m, "member");
                     int sid = sql.getMaxSessionId() + 1;
                     s.setSessionId(sid);
                     sql.saveSession(s);
                     break;
                 case 3:
-                    if(m.joinSession())System.out.println("Session joined successfully");
+                    if (m.joinSession()) System.out.println("Session joined successfully");
                     else System.out.println("Failed to join session");
                     break;
                 case 4:
@@ -283,7 +283,8 @@ public class Control {
                         System.out.println("Error deleting session");
                     break;
                 case 4:
-
+                    if (!viewSession())
+                        System.out.println("Error viewing session");
                     break;
                 case 5:
                     SessionList schedule = sql.getSchedule();
@@ -291,12 +292,13 @@ public class Control {
                     System.out.println(schedule);
                     break;
                 case 6:
+                    billingPayment();
                     break;
                 case 7:
                     a.viewEquipmentStatus();
                     break;
                 case 0:
-                    break;
+                    return;
                 default:
                     System.out.println("If you got here go buy a lottery ticket because the only way it happened" +
                             " is either if a cosmic ray flipped a bit on your machine or I messed up writing some dead" +
@@ -308,9 +310,21 @@ public class Control {
 
     }
 
-    //this is lowkey redundant since the schedule is already printed out lol
-    public boolean viewSession()
-    {
+    public void billingPayment() {
+        List<String> members = sql.getTable("Member");
+        String memberUsername = v.pickMember(members);
+        if (memberUsername == null) return;
+        Member m = sql.getMember(memberUsername);
+        if (m == null) {
+            System.out.println("Error, member does not exist");
+            return;
+        }
+        m.pay();
+        sql.setInfo(m, "Member");
+        System.out.println("Balance paid successfully");
+    }
+
+    public boolean viewSession() {
         SessionList schedule = sql.getSchedule();
         if (schedule == null) return false;
         Session s = v.chooseSession(schedule);
@@ -318,8 +332,7 @@ public class Control {
         return true;
     }
 
-    public boolean deleteSession()
-    {
+    public boolean deleteSession() {
         SessionList schedule = sql.getSchedule();
         if (schedule == null) return false;
         return sql.deleteSession(v.pickSessionId(schedule));
@@ -333,16 +346,19 @@ public class Control {
         switch (choice) {
             case 1:
                 int trainerId = v.getTrainerId();
-                if (!trainerExists(trainerId)) return false;
+                if (!trainerExists(trainerId) || !a.trainerAvailable(trainerId, s))
+                    return false;
                 s.setTrainerId(trainerId);
                 break;
             case 2:
-                List<Integer> memberIdsToAdd = v.getMemberIds();
-                if (!membersExist(memberIdsToAdd)) return false;
+                List<Integer> memberIdsToAdd = v.getMemberIds(sql.getTable("Member"));
+                if (!membersExist(memberIdsToAdd) || !a.membersAvailable(memberIdsToAdd, s))
+                    return false;
+                memberIdsToAdd.addAll(s.getMemberIds());
                 s.setMemberIds(memberIdsToAdd);
                 break;
             case 3:
-                List<Integer> memberIdsToRemove = v.getMemberIds();
+                List<Integer> memberIdsToRemove = v.getMemberIds(sql.getMembers(s.getMemberIds()));
                 if (!s.removeMembers(memberIdsToRemove)) return false;
                 if (s.getMemberIds().isEmpty()) {
                     System.out.println("All members removed! Deleting session");
@@ -354,21 +370,25 @@ public class Control {
                 int roomNum = v.getRoomNumber();
                 if (!roomExists(roomNum)) return false;
                 s.setRoomNumber(roomNum);
+                if (a.hasConflict(s, schedule)) return false;
                 break;
             case 5:
                 LocalDate date = v.getDate();
                 if (date == null) return false;
                 s.setDate(date);
+                if (!a.isValid(s)) return false;
                 break;
             case 6:
                 LocalTime startTime = v.getStartTime();
                 if (startTime == null) return false;
                 s.setStartTime(startTime);
+                if (!a.isValid(s)) return false;
                 break;
             case 7:
                 LocalTime endTime = v.getEndTime();
                 if (endTime == null) return false;
                 s.setEndTime(endTime);
+                if (!a.isValid(s)) return false;
                 break;
             case 0:
                 System.out.println("Returning to main menu");
@@ -379,17 +399,10 @@ public class Control {
                         " simple code. Actually nvm it's highly likely that I messed up writing dead simple code" +
                         " lmao.");
                 break;
-
         }
-        if (!a.isValid(s)) {
-            //change this wording cause damn
-            System.out.println("Oops, it seems that the new changes render the session invalid");
-            return false;
-        }
-
         sql.deleteSession(s.getSessionId());
-        sql.saveSession(s);
-        return true;
+        return sql.saveSession(s);
+
     }
 
 
@@ -409,7 +422,7 @@ public class Control {
         if ((startTime = v.getStartTime()) == null) return false;
         if ((endTime = v.getEndTime()) == null) return false;
 
-        List<Integer> memberIds = v.getMemberIds();
+        List<Integer> memberIds = v.getMemberIds(sql.getTable("Member"));
         if (!membersExist(memberIds)) return false;
         return a.createSession(trainerId, memberIds, roomNum, date, startTime, endTime);
     }
