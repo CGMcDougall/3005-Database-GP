@@ -146,7 +146,7 @@ add member to an existing class
     }
 
     public int adminMainMenu() {
-        int numOptions = 7;
+        int numOptions = 8;
         System.out.println("Options:");
         System.out.println("1 -> Create Session");
         System.out.println("2 -> Change Session Details");
@@ -154,6 +154,7 @@ add member to an existing class
         System.out.println("4 -> View Session Details");
         System.out.println("5 -> Print Schedule");
         System.out.println("6 -> Billing and Payment Processing");
+        System.out.println("7 -> Monitor Equipment Maintenance");
         System.out.println("0 -> back to login page"); //could also quit the program if easier
         return getInt(0, numOptions);
     }
