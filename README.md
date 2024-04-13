@@ -11,7 +11,7 @@ Description:
 
 Files:
 
-  SQL/ 
+  SQL/ '\n'
       Contains the SQL code for the database init and sample data. 
   src/ 
       Notable classes
