@@ -1,17 +1,15 @@
 package src;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Admin extends User {
-    private SQLManager sql;
 
     public Admin(int id, String fn, String ln, String un, String pass) {
         super(id, fn, ln, un, pass);
-        sql = new SQLManager();
+        //sql = new SQLManager();
     }
 
     /*
@@ -43,7 +41,7 @@ public class Admin extends User {
         for (int i = 1; i < memberIds.size(); ++i) s.addMember(memberIds.get(i));
 
         if (isValid(s))
-            sql.saveFullSession(s);
+            return sql.saveSession(s);
 
         return false;
     }
@@ -58,7 +56,7 @@ public class Admin extends User {
 //     */
 //    public boolean isValid(Session s) {
 //        //load schedule from database
-//        List<Session> schedule = sql.getSchedule();
+//        SessionList schedule = sql.getSchedule();
 //        if (schedule == null) return false;
 //
 //        //check if the new session conflicts with any of the existing sessions in the schedule
@@ -84,7 +82,7 @@ public class Admin extends User {
 //    checks if the new session conflicts with the member's schedule
 //     */
 //    private boolean memberAvailable(int memberId, Session newSession) {
-//        List<Session> memberSchedule = sql.getMemberSchedule(memberId);
+//        SessionList memberSchedule = sql.getMemberSchedule(memberId);
 //        for (Session s : memberSchedule) {
 //            if (newSession.overlaps(s)) //check if newSession fits conflicts with s
 //                return false;
@@ -99,7 +97,7 @@ public class Admin extends User {
 //     */
 //    private boolean trainerAvailable(int trainerId, Session newSession) {
 //        // check if trainer has any conflicting sessions with newSession
-//        List<Session> trainerSchedule = sql.getTrainerSchedule(trainerId);
+//        SessionList trainerSchedule = sql.getTrainerSchedule(trainerId);
 //        for (Session s : trainerSchedule) {
 //            if (newSession.overlaps(s))
 //                return false;
@@ -129,7 +127,7 @@ public class Admin extends User {
 //    sessions currently in the schedule
 //    returns true if there are conflicts, false if no conflicts
 //     */
-//    private boolean hasConflict(Session session, List<Session> schedule) {
+//    private boolean hasConflict(Session session, SessionList schedule) {
 //        for (Session existingSession : schedule) {
 //            if (session.sameRoom(existingSession)) {
 //                if (session.overlaps(existingSession)) {
@@ -148,7 +146,7 @@ public class Admin extends User {
     public boolean addUserToClass(int sessionId, int memberId) {
         Session s = sql.getSession(sessionId);
         if (!s.isGroupSession()) return false;
-        return sql.saveSession(s, memberId);
+        return sql.saveSessionRow(s, memberId);
     }
 
 }

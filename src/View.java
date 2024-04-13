@@ -71,7 +71,7 @@ public class View {
         return i;
     }
 
-    public int memberScheduleView(){
+    public int memberScheduleView() {
         in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1. View personal schedule, 2. Plan a new Session, 3. Drop a session, 4. Back");
@@ -79,7 +79,7 @@ public class View {
         return i;
     }
 
-    public int dropSession(){
+    public int dropSession() {
         in.nextLine();
         System.out.println("What session would you like to drop (0 to cancel)");
         return in.nextInt();
@@ -94,7 +94,7 @@ public class View {
         return i;
     }
 
-    public int trainerScheduleView(){
+    public int trainerScheduleView() {
         in.nextLine();
         System.out.println("What would you like to do?");
         System.out.println("1. View current schedule, 2. Alter current schedule, 3. Back");
@@ -141,7 +141,7 @@ add member to an existing class
      */
 
 
-    private void printSchedule(List<Session> sched) {
+    private void printSchedule(SessionList sched) {
         for (Session s : sched) System.out.println(s);
     }
 
@@ -158,13 +158,35 @@ add member to an existing class
         return getInt(0, numOptions);
     }
 
-
-
-    public void showSchedule(List<Session> schedule)
+    public int pickSessionId(SessionList schedule)
     {
-        System.out.println("Schedule:");
-        for (Session s: schedule) System.out.println(s);
+        System.out.println("Please enter the session ID corresponding to the session you would like to delete");
+        System.out.println(schedule);
+        return getInt(schedule.getSessionsIds());
     }
+    public int chooseSessionDetailsToChange() {
+        System.out.println("What would you like to change about this session?");
+        System.out.println("1 -> Trainer");
+        System.out.println("2 -> Add Member(s)");
+        System.out.println("3 -> Remove Member(s)");
+        System.out.println("4 -> Room");
+        System.out.println("5 -> Date");
+        System.out.println("6 -> Start Time");
+        System.out.println("7 -> End Time");
+        System.out.println("0 -> Back to Menu");
+        return getInt(0, 7);
+    }
+
+    public Session chooseSession(SessionList schedule)
+    {
+        List<Integer> sessionIds = schedule.getSessionsIds();
+        System.out.println("Please enter the session ID");
+        System.out.println(schedule);
+        System.out.print("\nSession ID: ");
+        int sid = getInt(sessionIds);
+        return schedule.getSession(sid);
+    }
+
 
     public int getTrainerId() {
         //get trainer id
@@ -182,32 +204,56 @@ add member to an existing class
 
     public LocalDate getDate() {
         //get date
+        LocalDate date;
         System.out.print("Year of session: ");
         int year = getInt();
         System.out.print("Month of session: ");
         int month = getInt(1, 13);
         System.out.print("Day of session: ");
         int day = getInt(1, 32);
-        return LocalDate.of(year, month, day);
+        try {
+            date = LocalDate.of(year, month, day);
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Error, the date you entered is invalid: " + e);
+            return null;
+        }
+        return date;
     }
 
     public LocalTime getStartTime() {
         //get start time
+        LocalTime time;
         System.out.print("Hour of start of session: ");
         int sHour = getInt(1, 25); //25 since getInt() uses [lowerBound, upperBound) format
         System.out.print("Minute of start of session: ");
         int sMinute = getInt(0, 60);
-        return LocalTime.of(sHour, sMinute);
+
+        try {
+            time = LocalTime.of(sHour, sMinute);
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Error, the date you entered is invalid: " + e);
+            return null;
+        }
+        return time;
     }
 
     public LocalTime getEndTime() {
         //get end time
+        LocalTime time;
         System.out.print("Hour of end of session: ");
         int eHour = getInt(1, 25);
         System.out.print("Minute of end of session: ");
         int eMinute = getInt(0, 60);
-        return LocalTime.of(eHour, eMinute);
+
+        try {
+            time = LocalTime.of(eHour, eMinute);
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Error, the date you entered is invalid: " + e);
+            return null;
+        }
+        return time;
     }
+
 
     public List<Integer> getMemberIds() {
         List<Integer> memberIds = new ArrayList<>();
@@ -230,7 +276,22 @@ add member to an existing class
     }
 
 
-
+    /* Oliver
+        function to get integer input for values in the validInputs parameter
+        handles all errors
+         */
+    private int getInt(List<Integer> validInputs) {
+        int choice = -1;
+        while (!validInputs.contains(choice)) {
+            try {
+                System.out.print("Enter your selection: ");
+                choice = in.nextInt();
+            } catch (Exception e) {
+                in.nextLine();
+            }
+        }
+        return choice;
+    }
 
     /* Oliver
     function to get integer input for values between 0 and upperBound
@@ -270,7 +331,7 @@ add member to an existing class
 
 
 /*
-    public Session createSession(List<Session> schedule) {
+    public Session createSession(SessionList schedule) {
         int trainerId, roomNum, year, month, day, sHour, sMinute, eHour, eMinute;
         List<Integer> memberIds = new ArrayList<>();
         int currMemberId = 0;

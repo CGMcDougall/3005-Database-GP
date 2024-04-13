@@ -19,7 +19,6 @@ public abstract class User {
         userName = un;
         password = pass;
         sql = new SQLManager();
-
     }
 
     public int getId(){
@@ -49,8 +48,10 @@ this should be everything
  */
     public boolean isValid(Session s) {
         //load schedule from database
-        List<Session> schedule = sql.getSchedule();
-        if (schedule == null) return false;
+        SessionList schedule = sql.getSchedule();
+        if (schedule == null) {
+            return false;
+        }
 
         //check if the new session conflicts with any of the existing sessions in the schedule
         if (hasConflict(s, schedule)) {
@@ -75,7 +76,7 @@ this should be everything
     checks if the new session conflicts with the member's schedule
      */
     private boolean memberAvailable(int memberId, Session newSession) {
-        List<Session> memberSchedule = sql.getMemberSchedule(memberId);
+        SessionList memberSchedule = sql.getMemberSchedule(memberId);
         for (Session s : memberSchedule) {
             if (newSession.overlaps(s)) //check if newSession fits conflicts with s
                 return false;
@@ -90,7 +91,7 @@ this should be everything
      */
     private boolean trainerAvailable(int trainerId, Session newSession) {
         // check if trainer has any conflicting sessions with newSession
-        List<Session> trainerSchedule = sql.getTrainerSchedule(trainerId);
+        SessionList trainerSchedule = sql.getTrainerSchedule(trainerId);
         for (Session s : trainerSchedule) {
             if (newSession.overlaps(s))
                 return false;
@@ -120,7 +121,7 @@ this should be everything
     sessions currently in the schedule
     returns true if there are conflicts, false if no conflicts
      */
-    private boolean hasConflict(Session session, List<Session> schedule) {
+    private boolean hasConflict(Session session, SessionList schedule) {
         for (Session existingSession : schedule) {
             if (session.sameRoom(existingSession)) {
                 if (session.overlaps(existingSession)) {

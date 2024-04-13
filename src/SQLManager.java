@@ -6,6 +6,14 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+TODO: add all the payment shit
+      test Admin menu options 2, 3, 4 because it's 2am and i need sleep
+      make getEquipmentMaintenanceStatus stuff cleaner because it's pretty scuffed
+      uhhh maybe something else? idk at this point...
+*/
+// CONNOR can you look over the menu options i gave admin and let me know if you think
+// im missing anything? project specs were a bit unclear lol
 
 public class SQLManager {
 
@@ -20,13 +28,13 @@ public class SQLManager {
         making this universal or easliy swithchable
         */
 
-        String url = "jdbc:postgresql://localhost:5432/3005_GP";
-        String user = "postgres";
-        String pass = "admin";
-
-//        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+//        String url = "jdbc:postgresql://localhost:5432/3005_GP";
 //        String user = "postgres";
-//        String pass = "8439";
+//        String pass = "admin";
+
+        String url = "jdbc:postgresql://localhost:5432/FINAL_PROJECT";
+        String user = "postgres";
+        String pass = "8439";
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -325,6 +333,23 @@ public class SQLManager {
         return equipmentData;
     }
 
+    /*
+    deletes session with session_id sessionId
+    @returns false if unsuccessful, true if successful
+     */
+    public boolean deleteSession(int sessionId)
+    {
+        String query = "DELETE FROM Schedule WHERE session_id=?";
+
+        try(PreparedStatement pstatement = con.prepareStatement(query)) {
+            pstatement.setInt(1, sessionId);
+            pstatement.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error deleting session ID: " + e);
+            return false;
+        }
+        return true;
+    }
 
     /*
     saves session object to the database. Works for both group
@@ -332,10 +357,10 @@ public class SQLManager {
     @param s Session object to save
     returns true if successful, false if unsuccessful
      */
-    public boolean saveFullSession(Session s) //saves full session object
+    public boolean saveSession(Session s) //saves full session object
     {
         for (int i = 0; i < s.getMemberIds().size(); ++i) {
-            if (!saveSession(s, s.getMemberIds().get(i))) return false;
+            if (!saveSessionRow(s, s.getMemberIds().get(i))) return false;
         }
         return true;
     }
@@ -347,7 +372,7 @@ public class SQLManager {
         @param memberIndex member id to add to schedule
         returns true if successful, false if unsuccessful
          */
-    public boolean saveSession(Session s, int memberId) { //saves one session row (need the 2 funcs cause of group sessions)
+    public boolean saveSessionRow(Session s, int memberId) { //saves one session row (need the 2 funcs cause of group sessions)
         String query = "INSERT INTO Schedule (session_id, member_id, room_number, trainer_id, session_date, start_time, " +
                 "end_time) VALUES (?, ?, ?, ?, ?, ?, ?) on conflict(session_id, member_id) do nothing";
 
@@ -430,7 +455,7 @@ public class SQLManager {
        returns sessions that the trainer with trainer_id trainerId
        is teaching
         */
-    public List<Session> getTrainerSchedule(int trainerId)
+    public SessionList getTrainerSchedule(int trainerId)
     {
         String query = "SELECT session_id FROM Schedule WHERE trainer_id=?";
         try (PreparedStatement pstatement = con.prepareStatement(query))
@@ -453,7 +478,7 @@ public class SQLManager {
     is registered in, including all the other members that are
     registered in the session if it is a group session
      */
-    public List<Session> getMemberSchedule(int memberId)
+    public SessionList getMemberSchedule(int memberId)
     {
         String query = "SELECT session_id " +
                 "FROM Schedule " +
@@ -481,7 +506,7 @@ public class SQLManager {
     /* Oliver
     returns all sessions stored in database
      */
-    public List<Session> getSchedule() {
+    public SessionList getSchedule() {
         List<Integer> ids = getSessionIds();
         return getScheduleFromSessionIds(ids);
     }
@@ -490,9 +515,9 @@ public class SQLManager {
     given a list of session ids, this function returns a list of Sessions
     corresponding to those session ids
      */
-    private List<Session> getScheduleFromSessionIds(List<Integer> sessionIds) {
+    private SessionList getScheduleFromSessionIds(List<Integer> sessionIds) {
         if (sessionIds == null) return null;
-        List<Session> sessions = new ArrayList<>();
+        SessionList sessions = new SessionList();
         for (int id : sessionIds) {
             Session s = getSession(id);
             if (s == null) return null;

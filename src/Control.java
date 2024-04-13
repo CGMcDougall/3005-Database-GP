@@ -173,33 +173,33 @@ public class Control {
         }
     }
 
-    public void memberScheduleControl(Member m){
-        while(true){
-            switch (v.memberScheduleView()){
+    public void memberScheduleControl(Member m) {
+        while (true) {
+            switch (v.memberScheduleView()) {
                 case 1:
-                    for(Session s : sql.getMemberSchedule(m.getId())){
+                    for (Session s : sql.getMemberSchedule(m.getId())) {
                         System.out.println(s.toString() + "\n");
                     }
                     break;
                 case 2:
                     Session s = m.makeSession();
-                    if(s == null) {
+                    if (s == null) {
                         System.out.println("Session not created");
                         break;
                     }
 
                     int sid = sql.getMaxSessionId() + 1;
                     s.setSessionId(sid);
-                    sql.saveFullSession(s);
+                    sql.saveSession(s);
 
                     break;
                 case 3:
                     int SID = v.dropSession();
-                    if(SID == 0){
+                    if (SID == 0) {
                         System.out.println("Canceled");
                         break;
                     }
-                    if(sql.dropSession(m.getId(),SID))System.out.println("Session dropped successfully!");
+                    if (sql.dropSession(m.getId(), SID)) System.out.println("Session dropped successfully!");
                     else System.out.println("Something went wrong");
                     break;
                 case 4:
@@ -234,15 +234,15 @@ public class Control {
         }
     }
 
-    public void trainerSchedule(Trainer t){
-        while (true){
-            switch (v.trainerScheduleView()){
+    public void trainerSchedule(Trainer t) {
+        while (true) {
+            switch (v.trainerScheduleView()) {
                 case 1:
                     System.out.println("---Printing Schedule---\n");
                     t.getAvailability();
                     break;
                 case 2:
-                    if(t.adjustSchedule())sql.setTrainerAvailability(t);
+                    if (t.adjustSchedule()) sql.setTrainerAvailability(t);
                     break;
                 case 3:
                     System.out.println("Back");
@@ -252,9 +252,6 @@ public class Control {
             }
 
         }
-
-
-
     }
 
     public void adminControl() {
@@ -267,15 +264,24 @@ public class Control {
                     else System.out.println("Session created and saved");
                     break;
                 case 2:
+                    if (changeSessionDetails(a))
+                        System.out.println("Changes saved successfully");
+                    else
+                        System.out.println("Error saving changes to session");
                     break;
                 case 3:
+                    if (deleteSession())
+                        System.out.println("Session deleted successfully");
+                    else
+                        System.out.println("Error deleting session");
                     break;
                 case 4:
+
                     break;
                 case 5:
-                    List<Session> schedule = sql.getSchedule();
+                    SessionList schedule = sql.getSchedule();
                     if (schedule == null) break;
-                    v.showSchedule(schedule);
+                    System.out.println(schedule);
                     break;
                 case 6:
                     break;
@@ -292,41 +298,137 @@ public class Control {
 
     }
 
-    private boolean changeSessionDetails()
+    //this is lowkey redundant since the schedule is already printed out lol
+    public boolean viewSession()
     {
-        return false;
+        SessionList schedule = sql.getSchedule();
+        if (schedule == null) return false;
+        Session s = v.chooseSession(schedule);
+        System.out.println(s);
+        return true;
     }
+
+    public boolean deleteSession()
+    {
+        SessionList schedule = sql.getSchedule();
+        if (schedule == null) return false;
+        return sql.deleteSession(v.pickSessionId(schedule));
+    }
+
+    private boolean changeSessionDetails(Admin a) {
+        SessionList schedule = sql.getSchedule();
+        if (schedule == null) return false;
+        Session s = v.chooseSession(schedule);
+        int choice = v.chooseSessionDetailsToChange();
+        switch (choice) {
+            case 1:
+                int trainerId = v.getTrainerId();
+                if (!trainerExists(trainerId)) return false;
+                s.setTrainerId(trainerId);
+                break;
+            case 2:
+                List<Integer> memberIdsToAdd = v.getMemberIds();
+                if (!membersExist(memberIdsToAdd)) return false;
+                s.setMemberIds(memberIdsToAdd);
+                break;
+            case 3:
+                List<Integer> memberIdsToRemove = v.getMemberIds();
+                if (!s.removeMembers(memberIdsToRemove)) return false;
+                if (s.getMemberIds().isEmpty()) {
+                    System.out.println("All members removed! Deleting session");
+                    sql.deleteSession(s.getSessionId());
+                    return true;
+                }
+                break;
+            case 4:
+                int roomNum = v.getRoomNumber();
+                if (!roomExists(roomNum)) return false;
+                s.setRoomNumber(roomNum);
+                break;
+            case 5:
+                LocalDate date = v.getDate();
+                if (date == null) return false;
+                s.setDate(date);
+                break;
+            case 6:
+                LocalTime startTime = v.getStartTime();
+                if (startTime == null) return false;
+                s.setStartTime(startTime);
+                break;
+            case 7:
+                LocalTime endTime = v.getEndTime();
+                if (endTime == null) return false;
+                s.setEndTime(endTime);
+                break;
+            case 0:
+                System.out.println("Returning to main menu");
+                return true;
+            default:
+                System.out.println("If you got here go buy a lottery ticket because the only way it happened" +
+                        " is either if a cosmic ray flipped a bit on your machine or I messed up writing some dead" +
+                        " simple code. Actually nvm it's highly likely that I messed up writing dead simple code" +
+                        " lmao.");
+                break;
+
+        }
+        if (!a.isValid(s)) {
+            //change this wording cause damn
+            System.out.println("Oops, it seems that the new changes render the session invalid");
+            return false;
+        }
+
+        //this is such a garbage way of doing this but i cba to do it the right way
+        sql.deleteSession(s.getSessionId());
+        sql.saveSession(s);
+        return false; //this is here because i dont like seeing errors
+    }
+
 
     //TODO: finish testing this
     private boolean makeSession(Admin a) {
         System.out.println("Please enter the following information:");
         int trainerId = v.getTrainerId();
+        if (!trainerExists(trainerId)) return false;
+
+        int roomNum = v.getRoomNumber();
+        if (!roomExists(roomNum)) return false;
+
+        LocalDate date;
+        LocalTime startTime;
+        LocalTime endTime;
+        if ((date = v.getDate()) == null) return false;
+        if ((startTime = v.getStartTime()) == null) return false;
+        if ((endTime = v.getEndTime()) == null) return false;
+
+        List<Integer> memberIds = v.getMemberIds();
+        if (!membersExist(memberIds)) return false;
+        return a.createSession(trainerId, memberIds, roomNum, date, startTime, endTime);
+    }
+
+    private boolean trainerExists(int trainerId) {
         if (!sql.intExistsInTableColumn("Trainer", "trainer_id", trainerId)) {
             System.out.println("Error, trainer does not exist");
             return false;
         }
-        int roomNum = v.getRoomNumber();
+        return true;
+    }
+
+    public boolean roomExists(int roomNum) {
         if (!(List.of(Constants.ROOM_NUMS).contains(roomNum))) {
             System.out.println("Error, room does not exist");
             return false;
         }
-        LocalDate date;
-        LocalTime startTime;
-        LocalTime endTime;
-        try {
-            date = v.getDate();
-            startTime = v.getStartTime();
-            endTime = v.getEndTime();
-        } catch (java.time.DateTimeException e) {
-            System.out.println("Error, the date or times you entered are invalid: " + e);
-            return false;
-        }
-        List<Integer> memberIds = v.getMemberIds();
+        return true;
+    }
+
+    public boolean membersExist(List<Integer> memberIds) {
         for (int id : memberIds) {
-            if (!sql.intExistsInTableColumn("Member", "member_id", id))
+            if (!sql.intExistsInTableColumn("Member", "member_id", id)) {
+                System.out.printf("Error, member with ID %d does not exist\n", id);
                 return false;
+            }
         }
-        return a.createSession(trainerId, memberIds, roomNum, date, startTime, endTime);
+        return true;
     }
 
 
