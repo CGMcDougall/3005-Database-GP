@@ -19,7 +19,6 @@ public class SQLManager {
 
     static Connection con = null;
 
-
     //initilaize the SQL manager with a connection to use for interacting with database
     public SQLManager() {
 
@@ -326,7 +325,17 @@ public class SQLManager {
             String query = "SELECT * FROM equipment";
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(query);
-            equipmentData = getTableAsList(rs);
+            while (rs.next())
+            {
+                StringBuilder row = new StringBuilder();
+                if (rs.getInt("maintenance_status") == 0)
+                    row.append("Needs maintenance, ");
+                else
+                    row.append("Maintenance OK, ");
+                row.append(rs.getString("equipment_type"));
+                equipmentData.add(row.toString());
+            }
+
         } catch (SQLException e) {
             System.out.println("Error getting maintenance status: " + e);
         }
@@ -624,7 +633,6 @@ public class SQLManager {
     Delete an entry in the Session table, using a MemberId and Session ID as the key
     returns true if successful
      */
-
     public boolean dropSession(int mid, int sid){
         try{
             String f = String.format("DELETE FROM Schedule WHERE '%s' = session_id AND '%s' = member_id",sid,mid);

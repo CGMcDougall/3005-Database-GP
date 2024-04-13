@@ -285,6 +285,9 @@ public class Control {
                     break;
                 case 6:
                     break;
+                case 7:
+                    a.viewEquipmentStatus();
+                    break;
                 case 0:
                     break;
                 default:
@@ -377,10 +380,9 @@ public class Control {
             return false;
         }
 
-        //this is such a garbage way of doing this but i cba to do it the right way
         sql.deleteSession(s.getSessionId());
         sql.saveSession(s);
-        return false; //this is here because i dont like seeing errors
+        return true;
     }
 
 
