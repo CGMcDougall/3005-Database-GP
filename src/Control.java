@@ -131,6 +131,10 @@ public class Control {
                         memberScheduleControl(m);
                         break;
                     case 4:
+                        m.pay();
+                        sql.setStats(m);
+                        break;
+                    case 5:
                         System.out.println("System Closed");
                         System.exit(0);
                     default:
@@ -187,13 +191,16 @@ public class Control {
                         System.out.println("Session not created");
                         break;
                     }
-
+                    sql.setInfo(m,"member");
                     int sid = sql.getMaxSessionId() + 1;
                     s.setSessionId(sid);
                     sql.saveSession(s);
-
                     break;
                 case 3:
+                    if(m.joinSession())System.out.println("Session joined successfully");
+                    else System.out.println("Failed to join session");
+                    break;
+                case 4:
                     int SID = v.dropSession();
                     if (SID == 0) {
                         System.out.println("Canceled");
@@ -202,7 +209,7 @@ public class Control {
                     if (sql.dropSession(m.getId(), SID)) System.out.println("Session dropped successfully!");
                     else System.out.println("Something went wrong");
                     break;
-                case 4:
+                case 5:
                     System.out.println("Back");
                     return;
                 default:

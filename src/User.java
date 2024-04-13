@@ -75,7 +75,7 @@ this should be everything
     /* !!UNTESTED!!
     checks if the new session conflicts with the member's schedule
      */
-    private boolean memberAvailable(int memberId, Session newSession) {
+    protected boolean memberAvailable(int memberId, Session newSession) {
         SessionList memberSchedule = sql.getMemberSchedule(memberId);
         for (Session s : memberSchedule) {
             if (newSession.overlaps(s)) //check if newSession fits conflicts with s

@@ -58,7 +58,7 @@ public class View {
     public int memberView() {
         in.nextLine();
         System.out.println("What would you like to do?");
-        System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule, 4: Close");
+        System.out.println("1: Update Profile, 2: Display Profile, 3: Manage Schedule, 4: Pay balance, 5: Close");
         int i = in.nextInt();
         return i;
     }
@@ -74,7 +74,7 @@ public class View {
     public int memberScheduleView() {
         in.nextLine();
         System.out.println("What would you like to do?");
-        System.out.println("1. View personal schedule, 2. Plan a new Session, 3. Drop a session, 4. Back");
+        System.out.println("1. View personal schedule, 2. Plan a new Session, 3. Join a group session, 4. Drop a session, 5. Back");
         int i = in.nextInt();
         return i;
     }
