@@ -244,7 +244,7 @@ public class SQLManager {
 
     public boolean setInfo(Member m, String table) {
         try {
-            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s', balance = '%d' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name", table, m.getFirstName(), m.getLastName(), m.getPassword(), m.getId(), m.getPassword(),m.getBal(),m.getUserName());
+            String f = String.format("UPDATE %s SET first_name = '%s', last_name = '%s', password = '%s', balance = '%d' WHERE '%d' = member_id; UPDATE usertable SET password = '%s' WHERE '%s' = user_name", table, m.getFirstName(), m.getLastName(), m.getPassword(),m.getBal(), m.getId(), m.getPassword(),m.getUserName());
             Statement s = con.createStatement();
             s.executeUpdate(f);
             return true;
