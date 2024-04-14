@@ -3,7 +3,9 @@ A database management system, for project 2 of class 3005.
 Group Members: Connor McDougall and Oliver Przednowek.
 
 Walkthorugh Youtube link: https://youtu.be/Q_5Gos1vXb8
+
 Project report link: https://docs.google.com/document/d/14Gp7K4MYid9zVK_CLVaWkUkj67YhxxrmzPNmxB-QgoM
+(Also located in repository as Project Report)
 
 Description:
   A program made for users to interact with a database system desinged for a gym. 
