@@ -68,7 +68,6 @@ public class Session {
         return (memberIds.size() > 1);
     }
 
-    //likely not needed because removeMembers checks this
     public boolean membersInSession(List<Integer> memberIds)
     {
         for (int mid : memberIds) {
@@ -79,7 +78,6 @@ public class Session {
         }
         return true;
     }
-    //likely not needed because removeMembers checks this
     public boolean memberInSession(int memberId) {
         return memberIds.contains(memberId);
     }

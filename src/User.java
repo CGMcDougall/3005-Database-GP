@@ -7,28 +7,32 @@ import java.util.List;
 public abstract class User {
 
     int id;
-    protected String firstName,lastName;
-    protected String userName,password;
+    protected String firstName, lastName;
+    protected String userName, password;
 
     SQLManager sql;
 
-    public User(int id, String fn, String ln, String un, String pass){
+    public User(int id, String fn, String ln, String un, String pass) {
         this.id = id;
         firstName = fn;
-        lastName =  ln;
+        lastName = ln;
         userName = un;
         password = pass;
         sql = new SQLManager();
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
-    public String getFirstName(){ return firstName; }
+
+    public String getFirstName() {
+        return firstName;
+    }
 
     public String getLastName() {
         return lastName;
     }
+
     public String getUserName() {
         return userName;
     }
@@ -38,14 +42,6 @@ public abstract class User {
     }
 
 
-    /*
-TESTED:
-adding session outside of trainers schedule
-checking for session conflicts with existing schedule
-member is not available
-trainer is not available
-this should be everything
- */
     public boolean isValid(Session s) {
         //load schedule from database
         SessionList schedule = sql.getSchedule();
@@ -66,7 +62,7 @@ this should be everything
         return !hasConflict(s, schedule);
     }
 
-    /* !!UNTESTED!!
+    /*
     checks if the new session conflicts with the member's schedule
      */
     public boolean memberAvailable(int memberId, Session newSession) {
@@ -86,7 +82,7 @@ this should be everything
         return true;
     }
 
-    /* !!UNTESTED!!
+    /*
     checks if the new session conflicts with the trainer's schedule
     and if it is within the trainer's working hours
      */
@@ -126,7 +122,4 @@ this should be everything
         }
         return false;
     }
-
-
-
 }

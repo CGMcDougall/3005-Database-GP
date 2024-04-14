@@ -85,8 +85,6 @@ public class SQLManager {
         }
     }
 
-
-
     /*
         Connor
         using a string username, creates and returns a member, (without stats being initialized)
@@ -333,9 +331,6 @@ public class SQLManager {
         }
     }
 
-
-    //name, purpose, return:
-    //function exe::: ->return
 
     /*
     Oliver

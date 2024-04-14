@@ -86,8 +86,6 @@ public class Control {
                     username = usr;
                 }
 
-                //System.out.println("HOOLE");
-
                 switch (userType) {
                     case 1:
                         memberControl();
@@ -300,14 +298,10 @@ public class Control {
                 case 0:
                     return;
                 default:
-                    System.out.println("If you got here go buy a lottery ticket because the only way it happened" +
-                            " is either if a cosmic ray flipped a bit on your machine or I messed up writing some dead" +
-                            " simple code. Actually nvm it's highly likely that I messed up writing dead simple code" +
-                            " lmao.");
+                    System.out.println("Unknown error");
                     break;
             }
         }
-
     }
 
     public void billingPayment() {
@@ -402,11 +396,9 @@ public class Control {
         }
         sql.deleteSession(s.getSessionId());
         return sql.saveSession(s);
-
     }
 
 
-    //TODO: finish testing this
     private boolean makeSession(Admin a) {
         System.out.println("Please enter the following information:");
         int trainerId = v.getTrainerId();
@@ -452,6 +444,4 @@ public class Control {
         }
         return true;
     }
-
-
 }
