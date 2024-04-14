@@ -8,6 +8,9 @@ Project report link: https://docs.google.com/document/d/14Gp7K4MYid9zVK_CLVaWkUk
 Description:
   A program made for users to interact with a database system desinged for a gym. 
 
+Instructions:
+  To make work on users system, they must create a postgresDB and initilize it and load it with the SQL code provided. Then to have the code work, change the login infomation (Strings: url, user, pass) in the SQL manager to be in line with you database. 
+
 
 Files:
 
